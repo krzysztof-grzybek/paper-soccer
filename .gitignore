@@ -1,0 +1,8 @@
+node_modules/
+dist/
+archives/
+config.json
+secret.json
+cert.pem
+key.pem
+.idea/

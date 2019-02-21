@@ -1,0 +1,42 @@
+{
+  "name": "paper-soccer",
+  "version": "1.0.0",
+  "description": "facebook instant game - paper soccer",
+  "main": "index.html",
+  "scripts": {
+    "dev": "NODE_ENV=development webpack-dev-server",
+    "test-player": "NODE_ENV=test-player webpack-dev-server",
+    "build": "NODE_ENV=production webpack",
+    "upload": "node archive.js && node upload.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzysztof-grzybek/paper-soccer.git"
+  },
+  "keywords": [
+    "instant",
+    "game",
+    "facebook",
+    "paper",
+    "soccer"
+  ],
+  "author": "Krzysztof Grzybek & Maciej Grzybek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krzysztof-grzybek/paper-soccer/issues"
+  },
+  "homepage": "https://github.com/krzysztof-grzybek/paper-soccer#readme",
+  "devDependencies": {
+    "archiver": "^3.0.0",
+    "clean-webpack-plugin": "^1.0.1",
+    "copy-webpack-plugin": "^5.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "open": "0.0.5",
+    "request": "^2.88.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.0"
+  }
+}
