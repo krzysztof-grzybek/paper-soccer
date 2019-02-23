@@ -1,55 +1,42 @@
+const fs = require('fs');
 const path = require('path');
 const open = require('open');
-const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+const config = require('./config.json');
 const secret = require('./secret.json');
 
-function getConfig(env) {
-  if (!env) {
-    throw new Error('Environment is not specified');
-  }
+const ENV = process.env.NODE_ENV;
+const isDev = ENV === 'test-player' || ENV === 'local';
+const webpackEnv = isDev ? 'development' : 'production';
+const sdkPath = ENV === 'local' ? config.mockSdkPath : config.sdkPath;
 
-  const config = {
-    development: {
-      sdkPath: './common/js/mock/fbinstant.6.2.mock.js',
-    },
-    production: {
-      sdkPath: 'https://connect.facebook.net/en_US/fbinstant.6.2.js'
-    },
-    ['test-player']: {
-      sdkPath: 'https://connect.facebook.net/en_US/fbinstant.6.2.js'
-    }
-  };
+const devServerPort = 3000;
+const devServerUrl = ENV === 'test-player'
+  ? `https://www.facebook.com/embed/instantgames/${secret.FB_appId}/player?game_url=https://localhost:${devServerPort}`
+  : `https://localhost:${devServerPort}`;
 
-  return config[env];
-}
-
-const config = getConfig(process.env.NODE_ENV);
-const port = 3000;
-const env = process.env.NODE_ENV === 'test-player' ? 'development' : process.env.NODE_ENV;
 module.exports = {
-  mode: env,
-  devServer: {
-    contentBase: __dirname + '/dist',
-    port: port,
-    open: process.env.NODE_ENV === 'development',
-    https: {
-      key: fs.readFileSync('./key.pem'),
-      cert: fs.readFileSync('./cert.pem'),
-    },
-    after: () => {
-      if (process.env.NODE_ENV === 'test-player') {
-        open(`https://www.facebook.com/embed/instantgames/${secret.FB_appId}/player?game_url=https://localhost:${port}`);
-      }
-    },
-  },
+  mode: webpackEnv,
   entry: {
     bundle: './src/index.ts',
   },
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'tslint-loader',
+            options: {
+              emitErrors: true,
+            }
+          }
+        ]
+      },
       {
         test: /\.ts$/,
         use: 'ts-loader',
@@ -61,21 +48,34 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin([config.buildDirectory]),
     new HtmlWebpackPlugin({
       title: 'Paper soccer',
       template: 'index.html',
-      sdkPath: config.sdkPath,
+      sdkPath: sdkPath,
     }),
     new CopyPlugin([
       { from: './common', to: 'common' },
+      { from: './assets', to: 'assets' },
       {
         from: 'fbapp-config.json', to: 'fbapp-config.json'
       }
     ]),
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, config.buildDirectory),
     filename: '[name].js'
   },
+  devServer: {
+    contentBase: `${__dirname}/${config.buildDirectory}`,
+    port: devServerPort,
+    https: {
+      key: fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+    },
+    after: () => {
+      open(devServerUrl);
+    },
+  },
+  devtool: isDev ? 'inline-source-map' : false,
 };

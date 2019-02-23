@@ -4,10 +4,12 @@
   "description": "facebook instant game - paper soccer",
   "main": "index.html",
   "scripts": {
-    "dev": "NODE_ENV=development webpack-dev-server",
+    "start": "NODE_ENV=local webpack-dev-server",
     "test-player": "NODE_ENV=test-player webpack-dev-server",
     "build": "NODE_ENV=production webpack",
-    "upload": "node archive.js && node upload.js"
+    "archive": "node ./scripts/archive.js",
+    "upload": "node ./scripts/upload.js",
+    "deploy": "npm run build && npm run archive && npm run upload"
   },
   "repository": {
     "type": "git",
@@ -27,16 +29,23 @@
   },
   "homepage": "https://github.com/krzysztof-grzybek/paper-soccer#readme",
   "devDependencies": {
+    "@types/facebook-instant-games": "^6.2.2",
     "archiver": "^3.0.0",
     "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
     "open": "0.0.5",
+    "phaser3-docs": "github:photonstorm/phaser3-docs",
     "request": "^2.88.0",
     "ts-loader": "^5.3.3",
+    "tslint": "^5.12.1",
+    "tslint-loader": "^3.5.4",
     "typescript": "^3.3.3",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.0"
+  },
+  "dependencies": {
+    "phaser": "^3.16.2"
   }
 }

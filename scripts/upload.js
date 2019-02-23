@@ -1,11 +1,14 @@
 const request = require('request');
 const fs = require('fs');
 const open = require('open');
-const secret = require('./secret');
 
-const upload = function () {
+const secret = require('../secret');
+const config = require('../config.json');
+
+const upload = function (archiveDir, packageName) {
   return new Promise(function (resolve, reject) {
     console.log('Uploading archive...');
+
     request.post({
       url: 'https://graph-video.facebook.com/' + secret.FB_appId + '/assets',
       formData: {
@@ -13,7 +16,7 @@ const upload = function () {
         'type': 'BUNDLE',
         'comment': 'Uploaded via command line',
         'asset': {
-          value: fs.createReadStream('archives/package.zip'),
+          value: fs.createReadStream(`${archiveDir}/${packageName}.zip`),
           options: {
             filename: 'package.zip',
             contentType: 'application/octet-stream'
@@ -45,5 +48,5 @@ const upload = function () {
   });
 };
 
-upload();
+upload(config.archivesDirectory, config.packageName);
 
