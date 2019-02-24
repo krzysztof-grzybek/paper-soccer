@@ -1,28 +1,29 @@
 import 'phaser';
+/* tslint:disable:no-submodule-imports */
 import 'phaser/plugins/fbinstant/src/FacebookInstantGamesPlugin';
 
 import { MainScene } from './scenes/mainScene';
 
 const config: GameConfig = {
-  width: window.innerWidth,
   height: window.innerHeight,
+  width: window.innerWidth,
   type: Phaser.AUTO,
   parent: 'game',
   scene: MainScene,
   physics: {
-    default: 'arcade',
     arcade: {
-      gravity: { y: 200 }
-    }
-  }
+      gravity: { y: 200 },
+    },
+    default: 'arcade',
+  },
 };
 
 export class Game extends Phaser.Game {
-  constructor(config: GameConfig) {
-    super(config);
+  constructor(gameConfig: GameConfig) {
+    super(gameConfig);
   }
 }
 
-FBInstant.initializeAsync().then(function() {
+FBInstant.initializeAsync().then(() => {
   const game = new Game(config);
 });

@@ -32,7 +32,7 @@ module.exports = {
           {
             loader: 'tslint-loader',
             options: {
-              emitErrors: true,
+              formatter: 'stylish',
             }
           }
         ]

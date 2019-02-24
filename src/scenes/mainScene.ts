@@ -3,15 +3,15 @@ export class MainScene extends Phaser.Scene {
 
   constructor() {
     super({
-      key: 'MainScene'
+      key: 'MainScene',
     });
   }
 
-  preload(): void {
+  public preload(): void {
     this.load.image('logo', './assets/logo.png');
   }
 
-  create(): void {
+  public create(): void {
     this.logoSprite = this.add.sprite(400, 300, 'logo');
   }
 }
