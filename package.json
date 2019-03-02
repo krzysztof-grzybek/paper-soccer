@@ -4,7 +4,8 @@
   "description": "facebook instant game - paper soccer",
   "main": "index.html",
   "scripts": {
-    "start": "cross-env NODE_ENV=local webpack-dev-server",
+    "start": "node server/index.js",
+    "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
     "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",
     "archive": "node ./scripts/archive.js",
@@ -31,6 +32,7 @@
   "homepage": "https://github.com/krzysztof-grzybek/paper-soccer#readme",
   "devDependencies": {
     "@types/facebook-instant-games": "^6.2.2",
+    "@types/socket.io-client": "^1.4.32",
     "archiver": "^3.0.0",
     "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^5.0.0",
@@ -48,6 +50,11 @@
     "webpack-dev-server": "^3.2.0"
   },
   "dependencies": {
-    "phaser": "^3.16.2"
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "https": "^1.0.0",
+    "phaser": "^3.16.2",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   }
 }

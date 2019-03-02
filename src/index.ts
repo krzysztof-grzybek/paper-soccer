@@ -2,6 +2,7 @@ import 'phaser';
 /* tslint:disable:no-submodule-imports */
 import 'phaser/plugins/fbinstant/src/FacebookInstantGamesPlugin';
 
+import io from 'socket.io-client';
 import { MainScene } from './scenes/mainScene';
 
 const config: GameConfig = {
@@ -26,4 +27,5 @@ export class Game extends Phaser.Game {
 
 FBInstant.initializeAsync().then(() => {
   const game = new Game(config);
+  const socket = io('https://localhost:3001');
 });
