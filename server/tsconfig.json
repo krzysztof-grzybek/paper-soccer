@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./build",
+    "lib": ["es7"]
+  },
+  "include": ["./server/**/*"],
+  "files": ["./index.ts"],
+  "exclude": ["node_modules"]
+}

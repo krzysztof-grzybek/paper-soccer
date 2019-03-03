@@ -1,7 +1,7 @@
-const express = require('express');
-const https = require('https');
-const fs = require('fs');
-const socketIo = require('socket.io');
+import express = require('express');
+import https = require('https');
+import fs = require('fs');
+import socketIo = require('socket.io');
 
 const port = process.env.PORT || 3001;
 const options = {

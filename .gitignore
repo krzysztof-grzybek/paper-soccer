@@ -6,3 +6,4 @@ secret.json
 cert.pem
 key.pem
 .idea/
+server/build/
