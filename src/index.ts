@@ -9,8 +9,8 @@ const config: GameConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
   type: Phaser.AUTO,
-  parent: 'game',
   scene: MainScene,
+  backgroundColor: '#fff',
   physics: {
     arcade: {
       gravity: { y: 200 },
@@ -27,5 +27,5 @@ export class Game extends Phaser.Game {
 
 FBInstant.initializeAsync().then(() => {
   const game = new Game(config);
-  const socket = io('https://localhost:3001');
+  // const socket = io('https://localhost:3001');
 });
