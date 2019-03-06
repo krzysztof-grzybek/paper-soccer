@@ -22,7 +22,7 @@ class Graph<T> {
   }
 
   public forEachVertex(callback: (vertex: T) => void) {
-    this.verticies.forEach(callback)
+    this.verticies.forEach(callback);
   }
 }
 
