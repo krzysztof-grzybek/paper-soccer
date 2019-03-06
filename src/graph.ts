@@ -8,21 +8,24 @@ class Graph<T> {
   }
 
   public addEdge(vertexAIndex: number, vertexBIndex: number) {
-    const lower = Math.min(vertexAIndex, vertexBIndex);
-    const higher = Math.max(vertexAIndex, vertexBIndex);
-
-    this.adjacencyList[lower].push(higher); // adjacency list is symmetric, we use only upper-right part
+    this.adjacencyList[vertexAIndex].push(vertexBIndex);
+    this.adjacencyList[vertexBIndex].push(vertexAIndex);
   }
 
-  public hetEdge(vertexAIndex: number, vertexBIndex: number): boolean {
-    const lower = Math.min(vertexAIndex, vertexBIndex);
-    const higher = Math.max(vertexAIndex, vertexBIndex);
+  public hasEdge(vertexAIndex: number, vertexBIndex: number): boolean {
+    return this.adjacencyList[vertexAIndex].some(i => i === vertexBIndex);
+  }
 
-    return this.adjacencyList[lower].some(i => i === higher);
+  public getAdjacentVerticies(vertexIndex: number) {
+    return this.adjacencyList[vertexIndex];
   }
 
   public forEachVertex(callback: (vertex: T) => void) {
     this.verticies.forEach(callback);
+  }
+
+  public getVerticiesAmount() {
+    return this.verticies.length;
   }
 }
 

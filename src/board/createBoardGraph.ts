@@ -2,8 +2,8 @@ import { Graph } from '../graph';
 import { BoardPoint } from './model';
 
 function createBoardGraph(rows: number, columns: number): Graph<BoardPoint> {
-  const ROWS = columns;
-  const COLUMNS = rows;
+  const ROWS = rows;
+  const COLUMNS = columns;
 
   const graph = new Graph<BoardPoint>();
   let index = -1; // first vertex is of index 0
@@ -41,7 +41,7 @@ function createBoardGraph(rows: number, columns: number): Graph<BoardPoint> {
   }
 
   function createBody() {
-    for (let i = 0; i < COLUMNS - 2; i++) {
+    for (let i = 0; i < COLUMNS - 4; i++) {
       for (let j = 0; j < ROWS; j++) {
         let isBand = false;
 

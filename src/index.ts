@@ -10,7 +10,7 @@ const config: GameConfig = {
   width: window.innerWidth,
   type: Phaser.AUTO,
   scene: MainScene,
-  backgroundColor: '#fff',
+  backgroundColor: '#00d801',
   physics: {
     arcade: {
       gravity: { y: 200 },
