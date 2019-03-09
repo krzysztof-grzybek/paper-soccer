@@ -194,7 +194,7 @@ var FBInstant = {
     return new Promise(function (resolve, reject) {
       // Inject mock css
       var stylesheet = document.createElement('link');
-      stylesheet.href = 'css/mock/mock.css';
+      stylesheet.href = 'common/css/mock/mock.css';
       stylesheet.rel = 'stylesheet';
       stylesheet.type = 'text/css';
       document.head.appendChild(stylesheet);
