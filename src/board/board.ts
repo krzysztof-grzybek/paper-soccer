@@ -1,3 +1,4 @@
+import { BoardView } from './boardView';
 import { createBoardGraph } from './createBoardGraph';
 
 const ROWS = 9;
@@ -5,9 +6,11 @@ const COLUMNS = 11;
 
 class Board {
   private graph = createBoardGraph(ROWS, COLUMNS);
+  private view!: BoardView;
 
-  public getSize() {
-    return { ROWS, COLUMNS };
+  constructor(private scene: Phaser.Scene, size: { width: number, height: number }) {
+    this.view = new BoardView(scene, ROWS, COLUMNS, size);
+    this.view.render();
   }
 
   public getStartingPointIndex() {
@@ -15,7 +18,14 @@ class Board {
   }
 
   public getAdjacentPoints(pointIndex: number) {
-    return this.graph.getAdjacentVerticies(pointIndex);
+    const adjacentPoints = this.graph.getAdjacentVerticies(pointIndex);
+    return adjacentPoints.map(index => {
+      const position = this.view.getPositionAt(index);
+      return {
+        index,
+        position,
+      };
+    });
   }
 }
 

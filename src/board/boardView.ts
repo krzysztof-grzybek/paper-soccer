@@ -3,21 +3,22 @@ const POINT_COLOR = 0x0b0694;
 
 class BoardView {
   private coordsList: Array<{ x: number; y: number }> = [];
+  private graphics!: Phaser.GameObjects.Graphics;
 
   constructor(
-    private graphics: Phaser.GameObjects.Graphics,
+    private scene: Phaser.Scene,
     private rows: number,
     private columns: number,
     private dimensions: { width: number, height: number },
   ) {
-
+    this.graphics = this.scene.add.graphics({ x: 0, y: 0 });
   }
 
   public render() {
     this.renderPoints();
   }
 
-  public getCoordsAt(index: number) {
+  public getPositionAt(index: number) {
     return this.coordsList[index];
   }
 
@@ -33,7 +34,7 @@ class BoardView {
 
     for (let i = 0; i < this.columns - 2; i++) {
       for (let j = 0; j < this.rows; j++) {
-        this.addPoint(index,j *  horizontalSpacing, verticalSpacing + i * verticalSpacing);
+        this.addPoint(index, j *  horizontalSpacing, verticalSpacing + i * verticalSpacing);
         index++;
       }
     }
