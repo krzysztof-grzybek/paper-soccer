@@ -3,13 +3,14 @@ import 'phaser';
 import 'phaser/plugins/fbinstant/src/FacebookInstantGamesPlugin';
 
 import io from 'socket.io-client';
-import { MainScene } from './scenes/mainScene';
+import { GameEndScene } from './scenes/gameEndScene';
+import { GameplayScene } from './scenes/gameplayScene';
 
 const config: GameConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
   type: Phaser.AUTO,
-  scene: MainScene,
+  scene: [GameplayScene, GameEndScene],
   backgroundColor: '#00d801',
   physics: {
     arcade: {

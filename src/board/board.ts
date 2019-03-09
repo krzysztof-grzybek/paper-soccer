@@ -34,6 +34,11 @@ class Board {
     const vertex = this.graph.getVertexData(pointIndex);
     return vertex.isBand;
   }
+
+  public isInGate(pointIndex: number) {
+    const vertex = this.graph.getVertexData(pointIndex);
+    return vertex.isInGate;
+  }
 }
 
 export { Board };

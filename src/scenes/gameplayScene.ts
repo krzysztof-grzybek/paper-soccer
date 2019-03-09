@@ -2,15 +2,16 @@ import { Board } from '../board/board';
 import { PointData } from '../model';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
+import { GameEndScene } from './gameEndScene';
 
-export class MainScene extends Phaser.Scene {
+export class GameplayScene extends Phaser.Scene {
   private board!: Board;
   private touchIndicators!: TouchIndicators;
   private trail!: Trail;
 
   constructor() {
     super({
-      key: 'MainScene',
+      key: 'GameplayScene',
     });
   }
 
@@ -40,28 +41,50 @@ export class MainScene extends Phaser.Scene {
   }
 
   private onMove(point: PointData) {
-    let lastMove = false;
-    if (
-      !this.board.isOnBand(point.index) &&
-      !this.trail.wasPointVisited(point.index)
-    ) {
-      lastMove = true;
-    }
+    const isWin = this.board.isInGate(point.index); // TODO: check if it's proper gate after players introduce
+    const isLastMoveInTurn = !this.canMakeNextMove(point.index);
 
     this.touchIndicators.clear();
     this.trail.next(point);
 
-    if (lastMove) {
+    const isLoss = this.getAvailableMoves(point.index).length === 0;
+
+    if (isWin) {
+      this.scene.switch('GameEndScene');
+      const scene = this.scene.get('GameEndScene') as GameEndScene;
+      scene.setWin();
+      // send move to server
+      return;
+    }
+
+    if (isLoss) {
+      this.scene.switch('GameEndScene');
+      const scene = this.scene.get('GameEndScene') as GameEndScene;
+      scene.setLoss();
+      // send move to server
+      return;
+    }
+
+    if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
       this.prepareForNextMove(point.index); // this will be removed after BE setup
-    } else {
-      this.prepareForNextMove(point.index);
+      return;
     }
+
+    this.prepareForNextMove(point.index);
   }
 
   private prepareForNextMove(pointIndex: number) {
-    const adjacentPoints = this.board.getAdjacentPoints(pointIndex);
-    const availableMoves = adjacentPoints.filter(p => this.trail.canGoTo(p));
+    const availableMoves = this.getAvailableMoves(pointIndex);
     this.touchIndicators.render(availableMoves);
+  }
+
+  private getAvailableMoves(pointIndex: number) {
+    const adjacentPoints = this.board.getAdjacentPoints(pointIndex);
+    return adjacentPoints.filter(p => this.trail.canGoTo(p));
+  }
+
+  private canMakeNextMove(pointIndex: number) {
+    return this.board.isOnBand(pointIndex) || this.trail.wasPointVisited(pointIndex);
   }
 }
