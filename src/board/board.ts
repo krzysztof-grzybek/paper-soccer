@@ -13,8 +13,10 @@ class Board {
     this.view.render();
   }
 
-  public getStartingPointIndex() {
-    return Math.floor(this.graph.getVerticiesAmount() / 2);
+  public getStartingPoint() {
+    const index = Math.floor(this.graph.getVerticiesAmount() / 2);
+    const position = this.view.getPositionAt(index);
+    return { index, position };
   }
 
   public getAdjacentPoints(pointIndex: number) {
