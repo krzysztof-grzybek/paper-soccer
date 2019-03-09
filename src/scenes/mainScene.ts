@@ -1,4 +1,5 @@
 import { Board } from '../board/board';
+import { PointData } from '../model';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
 
@@ -22,18 +23,9 @@ export class MainScene extends Phaser.Scene {
     this.trail = new Trail(this, this.board.getStartingPoint());
 
     const startingPoint = this.board.getStartingPoint();
-    const adjacentPoints = this.board.getAdjacentPoints(startingPoint.index);
-    const availableMoves = adjacentPoints.filter(point => this.trail.canGoTo(point));
+    this.prepareForNextMove(startingPoint.index);
 
-    this.touchIndicators.render(availableMoves);
-    this.touchIndicators.onChoose(point => {
-      this.touchIndicators.clear();
-      this.trail.next(point);
-
-      const ap = this.board.getAdjacentPoints(point.index);
-      const av = ap.filter(p => this.trail.canGoTo(p));
-      this.touchIndicators.render(av);
-    });
+    this.touchIndicators.onChoose(this.onMove.bind(this));
   }
 
   private getSceneRenderConfig() {
@@ -45,5 +37,31 @@ export class MainScene extends Phaser.Scene {
       position: { x: MARGIN, y: MARGIN },
       size: { width, height },
     };
+  }
+
+  private onMove(point: PointData) {
+    let lastMove = false;
+    if (
+      !this.board.isOnBand(point.index) &&
+      !this.trail.wasPointVisited(point.index)
+    ) {
+      lastMove = true;
+    }
+
+    this.touchIndicators.clear();
+    this.trail.next(point);
+
+    if (lastMove) {
+      // display some info about waiting for other player and send message to server
+      this.prepareForNextMove(point.index); // this will be removed after BE setup
+    } else {
+      this.prepareForNextMove(point.index);
+    }
+  }
+
+  private prepareForNextMove(pointIndex: number) {
+    const adjacentPoints = this.board.getAdjacentPoints(pointIndex);
+    const availableMoves = adjacentPoints.filter(p => this.trail.canGoTo(p));
+    this.touchIndicators.render(availableMoves);
   }
 }

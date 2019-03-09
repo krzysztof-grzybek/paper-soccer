@@ -1,3 +1,5 @@
+import { PointData } from './model';
+
 interface IndicatorData {
   index: number;
   position: {
@@ -28,9 +30,9 @@ class TouchIndicators {
     });
   }
 
-  public onChoose(callback: (point: any) => void) { // TOOD: provide proper type
-    this.touchEventEmitter.on('touch', (index: number) => {
-      callback(index);
+  public onChoose(callback: (point: PointData) => void) {
+    this.touchEventEmitter.on('touch', (point: IndicatorData) => {
+      callback(point);
     });
   }
 
@@ -42,7 +44,7 @@ class TouchIndicators {
     indicator.strokeCircle(data.position.x, data.position.y, RADIUS);
     indicator.setInteractive(shape, Phaser.Geom.Circle.Contains);
 
-    indicator.on('pointerdown', (obj: any) => {
+    indicator.on('pointerdown', (i: Phaser.GameObjects.Graphics) => {
       this.touchEventEmitter.emit('touch', data);
     });
 

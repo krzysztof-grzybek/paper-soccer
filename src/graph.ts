@@ -12,6 +12,10 @@ class Graph<T> {
     this.adjacencyList[vertexBIndex].push(vertexAIndex);
   }
 
+  public getVertexData(vertexIndex: number) {
+    return this.verticies[vertexIndex];
+  }
+
   public hasEdge(vertexAIndex: number, vertexBIndex: number): boolean {
     return this.adjacencyList[vertexAIndex].some(i => i === vertexBIndex);
   }

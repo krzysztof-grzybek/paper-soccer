@@ -29,6 +29,11 @@ class Board {
       };
     });
   }
+
+  public isOnBand(pointIndex: number) {
+    const vertex = this.graph.getVertexData(pointIndex);
+    return vertex.isBand;
+  }
 }
 
 export { Board };

@@ -46,6 +46,10 @@ class Trail {
     return true;
   }
 
+  public wasPointVisited(pointIndex: number) {
+    return this.adjacentList[pointIndex] && this.adjacentList[pointIndex].length;
+  }
+
   private getLastPoint() {
     return this.history[this.history.length - 1];
   }
