@@ -20,7 +20,7 @@ var FBInstant = {
       return FBInstant.__utils.returnUserData('Player 1');
     },
     getPhoto: function () {
-      return FBInstant.__utils.returnUserData('./img/mock/profile.png');
+      return FBInstant.__utils.returnUserData('./common/img/mock/profile.png');
     },
     getID: function () {
       return FBInstant.__utils.returnUserData(123456789);
@@ -70,17 +70,17 @@ var FBInstant = {
             {
               getID: function () { return 42; },
               getName: function () { return 'Friend 1'; },
-              getPhoto: function () { './img/mock/friend1.png'; }
+              getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
               getID: function () { return 43; },
               getName: function () { return 'Friend 2'; },
-              getPhoto: function () { './img/mock/friend2.png'; }
+              getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
               getID: function () { return 44; },
               getName: function () { return 'Friend 3'; },
-              getPhoto: function () { './img/mock/friend3.png'; }
+              getPhoto: function () { return './img/mock/friend3.png'; }
             }
           ];
         } else {
@@ -161,17 +161,17 @@ var FBInstant = {
             {
               getID: function () { return 42; },
               getName: function () { return 'Friend 1'; },
-              getPhoto: function () { './img/mock/friend1.png'; }
+              getPhoto: function () { return './common/img/mock/friend1.png'; }
             },
             {
               getID: function () { return 43; },
               getName: function () { return 'Friend 2'; },
-              getPhoto: function () { './img/mock/friend2.png'; }
+              getPhoto: function () { return './common/img/mock/friend2.png'; }
             },
             {
               getID: function () { return 44; },
               getName: function () { return 'Friend 3'; },
-              getPhoto: function () { './img/mock/friend3.png'; }
+              getPhoto: function () { return './common/img/mock/friend3.png'; }
             }
           ];
         } else {
@@ -332,7 +332,7 @@ var FBInstant = {
         var leaderboardEntry = FBInstant.__utils.createLeaderboardEntry(
           score,
           3,
-          {name: 'Player 1', photo: './img/mock/profile.png', id: 123456789},
+          {name: 'Player 1', photo: './common/img/mock/profile.png', id: 123456789},
           extraData
         );
         return Promise.resolve(leaderboardEntry);
@@ -341,7 +341,7 @@ var FBInstant = {
         var leaderboardEntry = FBInstant.__utils.createLeaderboardEntry(
           42,
           3,
-          {name: 'Player 1', photo: './img/mock/profile.png', id: 123456789}
+          {name: 'Player 1', photo: './common/img/mock/profile.png', id: 123456789}
         );
         return Promise.resolve(leaderboardEntry);
       },
@@ -467,7 +467,7 @@ var FBInstant = {
         }
       ]);
     },
-    purchaseAsync: function (options) {
+    purchaseAsyncHACKY_FIX: function (options) { // temp phaser plugin hacky fix
       return Promise.resolve(
         {
           productID: options.productID,

@@ -8,7 +8,9 @@ class GameEndScene extends Phaser.Scene {
   }
 
   public create() {
-    const button = this.add.text(20, 20, 'Restart');
+    const middleX = this.game.canvas.width / 2;
+    const middleY = this.game.canvas.height / 2;
+    const button = this.add.text(middleX, middleY + 40, 'Restart');
     button.setInteractive();
     button.on('pointerdown', () => {
       const scene = this.scene.get('GameplayScene');
@@ -18,13 +20,17 @@ class GameEndScene extends Phaser.Scene {
   }
 
   public setWin() {
+    const middleX = this.game.canvas.width / 2;
+    const middleY = this.game.canvas.height / 2;
     this.clear();
-    this.infoText = this.add.text(0 , 0, 'YOU WON!');
+    this.infoText = this.add.text(middleX , middleY, 'YOU WON!');
   }
 
   public setLoss() {
+    const middleX = this.game.canvas.width / 2;
+    const middleY = this.game.canvas.height / 2;
     this.clear();
-    this.infoText = this.add.text(0 , 0, 'YOU LOSE!');
+    this.infoText = this.add.text(middleX , middleY, 'YOU LOSE!');
   }
 
   private clear() {
