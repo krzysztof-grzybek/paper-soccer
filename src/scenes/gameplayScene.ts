@@ -6,6 +6,10 @@ import { GameEndScene } from './gameEndScene';
 
 const GAMEPLAY_SCENE_ID = 'GameplayScene';
 
+interface Game {
+  id: string;
+}
+
 class GameplayScene extends Phaser.Scene {
   private board!: Board;
   private touchIndicators!: TouchIndicators;
@@ -17,7 +21,7 @@ class GameplayScene extends Phaser.Scene {
     });
   }
 
-  public create(): void {
+  public create(game: Game): void {
     const { position, size } = this.getSceneRenderConfig();
     this.cameras.main.setPosition(position.x, position.y);
 

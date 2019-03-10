@@ -6,6 +6,7 @@ import io from 'socket.io-client';
 import { bootstrap } from './platformService';
 import { GameEndScene } from './scenes/gameEndScene';
 import { GameplayScene } from './scenes/gameplayScene';
+import { LobbyScene } from './scenes/lobbyScene';
 import { PreloaderScene } from './scenes/preloaderScene';
 import { UiScene } from './scenes/uiScene';
 
@@ -13,7 +14,7 @@ const config: GameConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
   type: Phaser.AUTO,
-  scene: [PreloaderScene, GameplayScene, UiScene, GameEndScene],
+  scene: [PreloaderScene, GameplayScene, UiScene, GameEndScene, LobbyScene],
   backgroundColor: '#00d801',
   physics: {
     arcade: {
