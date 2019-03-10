@@ -6,8 +6,8 @@ import io from 'socket.io-client';
 import { bootstrap } from './platformService';
 import { GameEndScene } from './scenes/gameEndScene';
 import { GameplayScene } from './scenes/gameplayScene';
-import { UiScene } from './scenes/uiScene';
 import { PreloaderScene } from './scenes/preloaderScene';
+import { UiScene } from './scenes/uiScene';
 
 const config: GameConfig = {
   height: window.innerHeight,

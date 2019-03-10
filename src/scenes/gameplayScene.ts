@@ -4,14 +4,16 @@ import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
 import { GameEndScene } from './gameEndScene';
 
-export class GameplayScene extends Phaser.Scene {
+const GAMEPLAY_SCENE_ID = 'GameplayScene';
+
+class GameplayScene extends Phaser.Scene {
   private board!: Board;
   private touchIndicators!: TouchIndicators;
   private trail!: Trail;
 
   constructor() {
     super({
-      key: 'GameplayScene',
+      key: GAMEPLAY_SCENE_ID,
     });
   }
 
@@ -68,6 +70,7 @@ export class GameplayScene extends Phaser.Scene {
     if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
       this.prepareForNextMove(point.index); // this will be removed after BE setup
+      this.events.emit('player-change');
       return;
     }
 
@@ -88,3 +91,5 @@ export class GameplayScene extends Phaser.Scene {
     return this.board.isOnBand(pointIndex) || this.trail.wasPointVisited(pointIndex);
   }
 }
+
+export { GameplayScene, GAMEPLAY_SCENE_ID };

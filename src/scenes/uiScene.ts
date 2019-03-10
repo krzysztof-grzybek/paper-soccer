@@ -1,4 +1,5 @@
 import { playerService } from '../playerService';
+import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 
 const UI_SCENE_ID = 'UiScene';
 
@@ -31,6 +32,9 @@ class UiScene extends Phaser.Scene {
     const text = this.add.text(x, 0, 'Paper soccer');
     text.setOrigin(0.5, 0);
     this.displayPlayersInfo();
+
+    const gameplayScene = this.scene.get(GAMEPLAY_SCENE_ID);
+    gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
   }
 
   private displayPlayersInfo() {
@@ -48,6 +52,12 @@ class UiScene extends Phaser.Scene {
       image.setDisplaySize(50, 50);
       image.setOrigin(1, 0);
     }
+  }
+
+  private onPlayerChange() {
+    // TODO: implement
+    // tslint:disable-next-line no-console
+    console.log('player change');
   }
 }
 

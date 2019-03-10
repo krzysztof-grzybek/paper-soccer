@@ -1,3 +1,5 @@
+import { GAMEPLAY_SCENE_ID } from './gameplayScene';
+
 class GameEndScene extends Phaser.Scene {
   private infoText: Phaser.GameObjects.Text | null = null;
 
@@ -13,9 +15,9 @@ class GameEndScene extends Phaser.Scene {
     const button = this.add.text(middleX, middleY + 40, 'Restart');
     button.setInteractive();
     button.on('pointerdown', () => {
-      const scene = this.scene.get('GameplayScene');
+      const scene = this.scene.get(GAMEPLAY_SCENE_ID);
       scene.scene.stop();
-      this.scene.switch('GameplayScene');
+      this.scene.switch(GAMEPLAY_SCENE_ID);
     });
   }
 

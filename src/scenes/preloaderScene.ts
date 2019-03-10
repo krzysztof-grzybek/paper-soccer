@@ -1,3 +1,6 @@
+import { GAMEPLAY_SCENE_ID } from './gameplayScene';
+import { UI_SCENE_ID } from './uiScene';
+
 class PreloaderScene extends Phaser.Scene {
 
   constructor() {
@@ -12,8 +15,8 @@ class PreloaderScene extends Phaser.Scene {
   }
 
   private startGame() {
-    this.scene.start('UiScene');
-    this.scene.start('GameplayScene');
+    this.scene.start(UI_SCENE_ID);
+    this.scene.start(GAMEPLAY_SCENE_ID);
   }
 
 }
