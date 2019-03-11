@@ -1,3 +1,4 @@
+import { socketService } from '../socketService';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 
 const LOBBY_SCENE_ID = 'LobbyScene';
@@ -23,9 +24,10 @@ class LobbyScene extends Phaser.Scene {
     });
 
     this.facebook.on('choose', (contextID: string) => {
-      const game = { id: this.facebook.contextID };
-      this.scene.start(GAMEPLAY_SCENE_ID, game);
-      this.scene.stop(LOBBY_SCENE_ID);
+      socketService.init(contextID, this.facebook.playerID).then(game => {
+        this.scene.start(GAMEPLAY_SCENE_ID, game);
+        this.scene.stop(LOBBY_SCENE_ID);
+      });
     });
   }
 }

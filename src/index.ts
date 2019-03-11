@@ -33,5 +33,4 @@ export class Game extends Phaser.Game {
 FBInstant.initializeAsync().then(() => {
   bootstrap();
   const game = new Game(config);
-  const socket = io('https://localhost:3001');
 });
