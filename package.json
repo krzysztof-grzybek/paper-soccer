@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "tsc -p ./server/tsconfig.json && node ./server/build/index.js",
-    "start-be": "node --inspect-brk --require ts-node/register  ./server/index.ts",
+    "start-be": "node --inspect --require ts-node/register  ./server/index.ts",
     "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
     "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",

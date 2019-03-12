@@ -30,9 +30,9 @@ class TouchIndicators {
     });
   }
 
-  public onChoose(callback: (point: PointData) => void) {
+  public onChoose(callback: (pointIndex: number) => void) {
     this.touchEventEmitter.on('touch', (point: IndicatorData) => {
-      callback(point);
+      callback(point.index);
     });
   }
 

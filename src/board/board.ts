@@ -19,6 +19,10 @@ class Board {
     return { index, position };
   }
 
+  public getPositionAt(pointIndex: number) {
+    return this.view.getPositionAt(pointIndex);
+  }
+
   public getAdjacentPoints(pointIndex: number) {
     const adjacentPoints = this.graph.getAdjacentVerticies(pointIndex);
     return adjacentPoints.map(index => {

@@ -1,45 +1,45 @@
+import { Board } from './board/board';
+
 interface PointData {
   index: number;
-  position: {
-    x: number;
-    y: number;
-  };
 }
 
 class Trail {
-  private history: PointData[] = [];
+  private history: number[] = [];
   private graphics: Phaser.GameObjects.Graphics;
   private adjacentList: number[][] = [];
 
-  constructor(private scene: Phaser.Scene, initialPoint: PointData) {
+  constructor(private scene: Phaser.Scene, private board: Board) {
     this.graphics = scene.add.graphics({ x: 0, y: 0 });
     this.graphics.lineStyle(3, 0x0b0694);
 
-    this.history.push(initialPoint);
-    this.adjacentList[initialPoint.index] = [];
+    this.history.push(this.board.getStartingPoint().index);
+    this.adjacentList[this.board.getStartingPoint().index] = [];
   }
 
-  public next(pointData: PointData) {
-    const lastPoint = this.getLastPoint();
+  public next(pointIndex: number) {
+    const lastPointIndex = this.getLastPointIndex();
 
-    if (!this.adjacentList[lastPoint.index]) {
-      this.adjacentList[lastPoint.index] = [];
+    if (!this.adjacentList[lastPointIndex]) {
+      this.adjacentList[lastPointIndex] = [];
     }
-    this.adjacentList[lastPoint.index].push(pointData.index);
+    this.adjacentList[lastPointIndex].push(pointIndex);
 
-    if (!this.adjacentList[pointData.index]) {
-      this.adjacentList[pointData.index] = [];
+    if (!this.adjacentList[pointIndex]) {
+      this.adjacentList[pointIndex] = [];
     }
-    this.adjacentList[pointData.index].push(lastPoint.index);
+    this.adjacentList[pointIndex].push(lastPointIndex);
 
-    this.history.push(pointData);
-    this.graphics.lineBetween(lastPoint.position.x, lastPoint.position.y, pointData.position.x, pointData.position.y);
+    this.history.push(pointIndex);
+    const lastPosition = this.board.getPositionAt(lastPointIndex);
+    const nextPosition = this.board.getPositionAt(pointIndex);
+    this.graphics.lineBetween(lastPosition.x, lastPosition.y, nextPosition.x, nextPosition.y);
   }
 
   public canGoTo(point: PointData) {
-    const lastPoint = this.getLastPoint();
+    const lastPointIndex = this.getLastPointIndex();
 
-    if (this.adjacentList[lastPoint.index].find(p => p === point.index)) {
+    if (this.adjacentList[lastPointIndex].find(p => p === point.index)) {
       return false;
     }
 
@@ -50,7 +50,11 @@ class Trail {
     return this.adjacentList[pointIndex] && this.adjacentList[pointIndex].length;
   }
 
-  private getLastPoint() {
+  public getHistory() {
+    return this.history;
+  }
+
+  private getLastPointIndex() {
     return this.history[this.history.length - 1];
   }
 }

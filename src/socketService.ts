@@ -22,11 +22,15 @@ class SocketService {
     });
   }
 
-  // public sendMove() {}
+  public sendMove(trailHistory: number[]) {
+    this.socket.emit('move', trailHistory);
+  }
 
-  // public onOponentMove() {
-  //
-  // }
+  public onOpponentMove(callback: (trail: number[]) => void) {
+    this.socket.on('opponent-moved', (trail: number[]) => {
+      callback(trail);
+    });
+  }
 }
 
 const socketService = new SocketService();

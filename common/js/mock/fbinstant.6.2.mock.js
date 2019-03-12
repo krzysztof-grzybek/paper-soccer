@@ -147,7 +147,7 @@ var FBInstant = {
       });
     },
     getType: function () {
-      return FBInstant.__utils.returnAndLog('SOLO');
+      return FBInstant.__utils.returnAndLog('THREAD');
     },
     isSizeBetween: function (minSize, maxSize) {
       return FBInstant.__utils.returnAndLog(true);

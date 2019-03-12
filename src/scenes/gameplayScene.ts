@@ -1,5 +1,5 @@
 import { Board } from '../board/board';
-import { PointData } from '../model';
+import { socketService } from '../socketService';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
 import { GameEndScene } from './gameEndScene';
@@ -27,12 +27,19 @@ class GameplayScene extends Phaser.Scene {
 
     this.board = new Board(this, size);
     this.touchIndicators = new TouchIndicators(this);
-    this.trail = new Trail(this, this.board.getStartingPoint());
+    this.trail = new Trail(this, this.board);
 
     const startingPoint = this.board.getStartingPoint();
     this.prepareForNextMove(startingPoint.index);
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
+    socketService.onOpponentMove(trail => {
+      // TODO: render only new part of trail
+      trail.forEach(i => {
+        this.trail.next(i);
+      });
+      this.prepareForNextMove(trail.pop()!);
+    });
   }
 
   private getSceneRenderConfig() {
@@ -46,14 +53,14 @@ class GameplayScene extends Phaser.Scene {
     };
   }
 
-  private onMove(point: PointData) {
-    const isWin = this.board.isInGate(point.index); // TODO: check if it's proper gate after players introduce
-    const isLastMoveInTurn = !this.canMakeNextMove(point.index);
+  private onMove(pointIndex: number) {
+    const isWin = this.board.isInGate(pointIndex); // TODO: check if it's proper gate after players introduce
+    const isLastMoveInTurn = !this.canMakeNextMove(pointIndex);
 
     this.touchIndicators.clear();
-    this.trail.next(point);
+    this.trail.next(pointIndex);
 
-    const isLoss = this.getAvailableMoves(point.index).length === 0;
+    const isLoss = this.getAvailableMoves(pointIndex).length === 0;
 
     if (isWin) {
       this.scene.switch('GameEndScene');
@@ -73,12 +80,12 @@ class GameplayScene extends Phaser.Scene {
 
     if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
-      this.prepareForNextMove(point.index); // this will be removed after BE setup
       this.events.emit('player-change');
+      socketService.sendMove(this.trail.getHistory());
       return;
     }
 
-    this.prepareForNextMove(point.index);
+    this.prepareForNextMove(pointIndex);
   }
 
   private prepareForNextMove(pointIndex: number) {
