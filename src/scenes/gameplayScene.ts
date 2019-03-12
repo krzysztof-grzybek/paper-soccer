@@ -33,12 +33,10 @@ class GameplayScene extends Phaser.Scene {
     this.prepareForNextMove(startingPoint.index);
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
+
     socketService.onOpponentMove(trail => {
-      // TODO: render only new part of trail
-      trail.forEach(i => {
-        this.trail.next(i);
-      });
-      this.prepareForNextMove(trail.pop()!);
+      this.trail.addMissing(trail);
+      this.prepareForNextMove(trail[trail.length - 1]);
     });
   }
 

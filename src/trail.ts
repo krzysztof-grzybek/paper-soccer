@@ -54,6 +54,14 @@ class Trail {
     return this.history;
   }
 
+  public addMissing(trail: number[]) {
+    const firstMissingIndex = this.history.length;
+    const missingTrail = trail.slice(firstMissingIndex, trail.length);
+    missingTrail.forEach(point => {
+      this.next(point);
+    });
+  }
+
   private getLastPointIndex() {
     return this.history[this.history.length - 1];
   }
