@@ -17,7 +17,7 @@ function createBoardGraph(rows: number, columns: number): Graph<BoardPoint> {
   return graph;
 
   function createUpperGate() {
-    addVertex({isInGate: true, isBand: true});
+    addVertex({ isInGate: true, gate: 2, isBand: true });
   }
 
   function createUpperFirstLine() {
@@ -111,7 +111,7 @@ function createBoardGraph(rows: number, columns: number): Graph<BoardPoint> {
   function createLowerGate() {
     const fromSideBandToGoalPost = Math.floor(ROWS / 2);
 
-    addVertex({ isInGate: true, isBand: true });
+    addVertex({ isInGate: true, gate: 1, isBand: true });
 
     graph.addEdge(index, index - fromSideBandToGoalPost - 2); // "addEdge" function won't work here
     graph.addEdge(index, index - fromSideBandToGoalPost - 1); // "addEdge" function won't work here

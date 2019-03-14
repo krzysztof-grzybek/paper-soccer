@@ -37,9 +37,9 @@ class Board {
     return vertex.isBand;
   }
 
-  public isInGate(pointIndex: number) {
+  public isInGate(pointIndex: number, gate: 1 | 2) {
     const vertex = this.graph.getVertexData(pointIndex);
-    return vertex.isInGate;
+    return vertex.isInGate && vertex.gate === gate;
   }
 }
 

@@ -9,6 +9,7 @@ const GAMEPLAY_SCENE_ID = 'GameplayScene';
 interface Game {
   id: string;
   isPlayerTurn: boolean;
+  isFirstPlayer: boolean;
   game: {
     state: number[];
   };
@@ -18,6 +19,9 @@ class GameplayScene extends Phaser.Scene {
   private board!: Board;
   private touchIndicators!: TouchIndicators;
   private trail!: Trail;
+
+  private aimGate!: 1 | 2;
+  private ownGate!: 1 | 2;
 
   constructor() {
     super({
@@ -32,6 +36,9 @@ class GameplayScene extends Phaser.Scene {
     this.board = new Board(this, size);
     this.touchIndicators = new TouchIndicators(this);
     this.trail = new Trail(this, this.board);
+
+    this.aimGate = game.isFirstPlayer ? 2 : 1;
+    this.ownGate = game.isFirstPlayer ? 1 : 2;
 
     this.trail.addMissing(game.game.state);
     const lastTrailPoint = this.trail.getLastPoint();
@@ -60,13 +67,13 @@ class GameplayScene extends Phaser.Scene {
   }
 
   private onMove(pointIndex: number) {
-    const isWin = this.board.isInGate(pointIndex); // TODO: check if it's proper gate after players introduce
+    const isWin = this.board.isInGate(pointIndex, this.aimGate);
     const isLastMoveInTurn = !this.canMakeNextMove(pointIndex);
 
     this.touchIndicators.clear();
     this.trail.next(pointIndex);
 
-    const isLoss = this.getAvailableMoves(pointIndex).length === 0;
+    const isLoss = this.board.isInGate(pointIndex, this.ownGate) || this.getAvailableMoves(pointIndex).length === 0;
 
     if (isWin) {
       this.scene.switch('GameEndScene');
