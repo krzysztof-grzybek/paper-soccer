@@ -23,7 +23,8 @@ var FBInstant = {
       return FBInstant.__utils.returnUserData('./common/img/mock/profile.png');
     },
     getID: function () {
-      return FBInstant.__utils.returnUserData(123456789);
+      const id = Number(localStorage.getItem('playerId')) || 54321;
+      return FBInstant.__utils.returnUserData(id);
     },
     getDataAsync: function (keys) {
       FBInstant.__utils.log('player.getDataAsync');
@@ -107,8 +108,7 @@ var FBInstant = {
   },
   context: {
     getID: function () {
-      // return 1234;
-      return null;
+      return 1234321;
     },
     chooseAsync: function () {
       return new Promise(function (resolve, reject) {

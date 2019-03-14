@@ -8,6 +8,10 @@ const GAMEPLAY_SCENE_ID = 'GameplayScene';
 
 interface Game {
   id: string;
+  isPlayerTurn: boolean;
+  game: {
+    state: number[];
+  };
 }
 
 class GameplayScene extends Phaser.Scene {
@@ -29,8 +33,12 @@ class GameplayScene extends Phaser.Scene {
     this.touchIndicators = new TouchIndicators(this);
     this.trail = new Trail(this, this.board);
 
-    const startingPoint = this.board.getStartingPoint();
-    this.prepareForNextMove(startingPoint.index);
+    this.trail.addMissing(game.game.state);
+    const lastTrailPoint = this.trail.getLastPoint();
+    const startingPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
+    if (game.isPlayerTurn) {
+      this.prepareForNextMove(startingPoint);
+    }
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
 

@@ -14,9 +14,7 @@ class Board {
   }
 
   public getStartingPoint() {
-    const index = Math.floor(this.graph.getVerticiesAmount() / 2);
-    const position = this.view.getPositionAt(index);
-    return { index, position };
+    return Math.floor(this.graph.getVerticiesAmount() / 2);
   }
 
   public getPositionAt(pointIndex: number) {

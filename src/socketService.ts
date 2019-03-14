@@ -17,6 +17,7 @@ class SocketService {
 
     return new Promise((resolve) => {
       this.socket.once('game-loaded', (game: Game) => {
+        game.isPlayerTurn = game.game.currentTurn === playerId;
         resolve(game);
       });
     });

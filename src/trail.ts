@@ -13,8 +13,8 @@ class Trail {
     this.graphics = scene.add.graphics({ x: 0, y: 0 });
     this.graphics.lineStyle(3, 0x0b0694);
 
-    this.history.push(this.board.getStartingPoint().index);
-    this.adjacentList[this.board.getStartingPoint().index] = [];
+    this.history.push(this.board.getStartingPoint());
+    this.adjacentList[this.board.getStartingPoint()] = [];
   }
 
   public next(pointIndex: number) {
@@ -60,6 +60,10 @@ class Trail {
     missingTrail.forEach(point => {
       this.next(point);
     });
+  }
+
+  public getLastPoint(): number | null {
+    return this.history.length > 1 ? this.history[this.history.length - 1] : null;
   }
 
   private getLastPointIndex() {

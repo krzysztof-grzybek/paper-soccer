@@ -1,3 +1,5 @@
+import fs = require('fs');
+
 function createNewGame(contextId: string, playerId: string) {
   return {
     contextId,
@@ -7,19 +9,52 @@ function createNewGame(contextId: string, playerId: string) {
     game: {
       initiator: playerId,
       currentTurn: playerId,
+      state: [],
       isFresh: true,
     },
   };
 }
-const db = {} as any;
 
-function get(contextId: string, playerId: string) {
-  return db[contextId] || createNewGame(contextId, playerId);
+function exists(contextId: string) {
+  const file = fs.readFileSync(__dirname + '/database.json', 'utf8');
+  const db = JSON.parse(file);
+  return Boolean(db[contextId]);
 }
 
-function update(contextId: string, updateData: any) {
-  db[contextId] = { ...db[contextId], ... updateData };
+function get(contextId: string) {
+  const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
   return db[contextId];
 }
 
-export { get, update };
+function create(contextId: string, playerId: string) {
+  const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
+  const game = createNewGame(contextId, playerId);
+  db[contextId] = game;
+  fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
+  return game;
+}
+
+function update(contextId: string, updateData: any) {
+  const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
+  db[contextId] = { ...db[contextId], ...updateData };
+  fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
+  return db[contextId];
+}
+
+function updateGame(contextId: string, updateData: any) {
+  const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
+  db[contextId].game = { ...(db[contextId].game), ...updateData };
+  fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
+  return db[contextId];
+}
+
+function isTurnOwnedBy(contextId: string, playerId: string) {
+  return get(contextId).game.currentTurn === playerId;
+}
+
+function getOpponent(ctxId: string, playerId: string) {
+  const game = get(ctxId);
+  return game.player1 === playerId ? game.player2 : game.player1;
+}
+
+export { create, exists, get, getOpponent, isTurnOwnedBy, update, updateGame };

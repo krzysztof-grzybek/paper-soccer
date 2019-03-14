@@ -1,5 +1,3 @@
-import { PointData } from './model';
-
 interface IndicatorData {
   index: number;
   position: {
