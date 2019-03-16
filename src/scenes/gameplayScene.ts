@@ -33,7 +33,7 @@ class GameplayScene extends Phaser.Scene {
     const { position, size } = this.getSceneRenderConfig();
     this.cameras.main.setPosition(position.x, position.y);
 
-    this.board = new Board(this, size);
+    this.board = new Board(this, size, !game.isFirstPlayer);
     this.touchIndicators = new TouchIndicators(this);
     this.trail = new Trail(this, this.board);
 

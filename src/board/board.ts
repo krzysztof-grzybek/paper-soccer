@@ -8,8 +8,8 @@ class Board {
   private graph = createBoardGraph(ROWS, COLUMNS);
   private view!: BoardView;
 
-  constructor(private scene: Phaser.Scene, size: { width: number, height: number }) {
-    this.view = new BoardView(scene, ROWS, COLUMNS, size);
+  constructor(private scene: Phaser.Scene, size: { width: number, height: number }, reverse: boolean) {
+    this.view = new BoardView(scene, ROWS, COLUMNS, size, reverse);
     this.view.render();
   }
 
