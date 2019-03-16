@@ -5,6 +5,8 @@ const URL = config.serverBaseUrl;
 
 type Game = any; // TODO: make common interface between fe and be
 
+type moveType = 'progress' | 'win' | 'loss';
+
 class SocketService {
   private socket: SocketIOClient.Socket;
 
@@ -24,13 +26,13 @@ class SocketService {
     });
   }
 
-  public sendMove(trailHistory: number[]) {
-    this.socket.emit('move', trailHistory);
+  public sendMove(moveData: { type: moveType, history: number[]}) {
+    this.socket.emit('move', moveData);
   }
 
-  public onOpponentMove(callback: (trail: number[]) => void) {
-    this.socket.on('opponent-moved', (trail: number[]) => {
-      callback(trail);
+  public onOpponentMove(callback: (data: { type: moveType, history: number[]}) => void) {
+    this.socket.on('opponent-moved', (moveData: { type: moveType, history: number[]}) => {
+      callback(moveData);
     });
   }
 }

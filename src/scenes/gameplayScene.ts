@@ -11,7 +11,7 @@ interface Game {
   isPlayerTurn: boolean;
   isFirstPlayer: boolean;
   game: {
-    state: number[];
+    history: number[];
   };
 }
 
@@ -40,7 +40,7 @@ class GameplayScene extends Phaser.Scene {
     this.aimGate = game.isFirstPlayer ? 2 : 1;
     this.ownGate = game.isFirstPlayer ? 1 : 2;
 
-    this.trail.addMissing(game.game.state);
+    this.trail.addMissing(game.game.history);
     const lastTrailPoint = this.trail.getLastPoint();
     const startingPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
     if (game.isPlayerTurn) {
@@ -49,9 +49,19 @@ class GameplayScene extends Phaser.Scene {
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
 
-    socketService.onOpponentMove(trail => {
-      this.trail.addMissing(trail);
-      this.prepareForNextMove(trail[trail.length - 1]);
+    socketService.onOpponentMove(({ type, history }) => {
+      this.trail.addMissing(history);
+      if (type === 'progress') {
+        this.prepareForNextMove(history[history.length - 1]);
+      } else if (type === 'win') {
+        this.scene.switch('GameEndScene');
+        const scene = this.scene.get('GameEndScene') as GameEndScene;
+        scene.setWin();
+      } else if (type === 'loss') {
+        this.scene.switch('GameEndScene');
+        const scene = this.scene.get('GameEndScene') as GameEndScene;
+        scene.setLoss();
+      }
     });
   }
 
@@ -79,7 +89,7 @@ class GameplayScene extends Phaser.Scene {
       this.scene.switch('GameEndScene');
       const scene = this.scene.get('GameEndScene') as GameEndScene;
       scene.setWin();
-      // send move to server
+      socketService.sendMove({ type: 'win', history: this.trail.getHistory() });
       return;
     }
 
@@ -87,14 +97,14 @@ class GameplayScene extends Phaser.Scene {
       this.scene.switch('GameEndScene');
       const scene = this.scene.get('GameEndScene') as GameEndScene;
       scene.setLoss();
-      // send move to server
+      socketService.sendMove({ type: 'loss', history: this.trail.getHistory() });
       return;
     }
 
     if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
       this.events.emit('player-change');
-      socketService.sendMove(this.trail.getHistory());
+      socketService.sendMove({ type: 'progress', history: this.trail.getHistory() });
       return;
     }
 

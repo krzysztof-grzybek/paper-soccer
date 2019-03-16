@@ -2,7 +2,7 @@ import express = require('express');
 import fs = require('fs');
 import https = require('https');
 import socketIo = require('socket.io');
-import { create, exists, get, getOpponent, isTurnOwnedBy, update, updateGame } from './model';
+import {create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame} from './model';
 
 const port = process.env.PORT || 3001;
 const options = {
@@ -51,13 +51,22 @@ io.on('connection', socket => {
     socket.leave(contextId!);
   });
 
-  socket.on('move', data => {
+  socket.on('move', ({ type, history }) => {
     if (!isTurnOwnedBy(contextId!, playerId!)) {
       return;
     }
-    const oponent = getOpponent(contextId!, playerId!);
-    updateGame(contextId!, { currentTurn: oponent, state: data });
-    socket.to(contextId!).emit('opponent-moved', data);
+
+    if (type === 'progress') {
+      const opponent = getOpponent(contextId!, playerId!);
+      updateGame(contextId!, { currentTurn: opponent, history });
+      socket.to(contextId!).emit('opponent-moved', { type: 'progress', history });
+    } else if (type === 'win') {
+      setWinMove(contextId!, playerId!, history);
+      socket.to(contextId!).emit('opponent-moved', { type: 'loss', history });
+    } else if (type === 'loss') {
+      setLostMove(contextId!, playerId!, history);
+      socket.to(contextId!).emit('opponent-moved', { type: 'win', history });
+    }
   });
 
 });

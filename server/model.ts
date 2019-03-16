@@ -9,7 +9,9 @@ function createNewGame(contextId: string, playerId: string) {
     game: {
       initiator: playerId,
       currentTurn: playerId,
-      state: [],
+      state: 'progress',
+      winner: null,
+      history: [],
       isFresh: true,
     },
   };
@@ -57,4 +59,14 @@ function getOpponent(ctxId: string, playerId: string) {
   return game.player1 === playerId ? game.player2 : game.player1;
 }
 
-export { create, exists, get, getOpponent, isTurnOwnedBy, update, updateGame };
+function setWinMove(contextId: string, playerId: string, movesHistory: number[]) {
+  updateGame(contextId, { winner: playerId, state: 'end', history: movesHistory });
+}
+
+function setLostMove(contextId: string, playerId: string, movesHistory: number[]) {
+  const game = get(contextId);
+  const winner = game.player1 === playerId ? game.player2 : game.player1;
+  updateGame(contextId, { winner, state: 'end', history: movesHistory });
+}
+
+export { create, exists, get, getOpponent, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };
