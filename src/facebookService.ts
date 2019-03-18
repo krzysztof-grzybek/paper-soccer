@@ -14,7 +14,7 @@ class FacebookService implements PlatformServiceAbstract {
     return FBInstant.context.getPlayersAsync().then((players) => {
 
       const oponent = players.find(p => p.getID() !== FBInstant.player.getID());
-      // TODO: handle this case
+
       if (!oponent) {
         throw new Error('Currently only messenger game is allowed.');
       }

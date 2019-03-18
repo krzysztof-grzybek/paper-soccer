@@ -31,7 +31,7 @@
     "navigation_menu_version": "NAV_FLOATING",
     "match_player_config": {
       "min_context_size": 2,
-      "max_context_size": 20
+      "max_context_size": 2
     }
   }
 }

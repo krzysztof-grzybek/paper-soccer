@@ -26,6 +26,7 @@ class GameplayScene extends Phaser.Scene {
   constructor() {
     super({
       key: GAMEPLAY_SCENE_ID,
+      active: false,
     });
   }
 

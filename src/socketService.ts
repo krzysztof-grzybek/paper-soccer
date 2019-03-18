@@ -35,6 +35,12 @@ class SocketService {
       callback(moveData);
     });
   }
+
+  public onOpponentConnect(callback: (playerId: string) => void) {
+    this.socket.on('opponent-connected', (playerId: string) => {
+      callback(playerId);
+    });
+  }
 }
 
 const socketService = new SocketService();

@@ -45,6 +45,7 @@ io.on('connection', socket => {
     }
 
     socket.emit('game-loaded', game);
+    socket.emit('opponent-connected', playerId);
   });
 
   socket.on('disconnect', () => {

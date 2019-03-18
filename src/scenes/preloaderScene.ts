@@ -27,7 +27,6 @@ class PreloaderScene extends Phaser.Scene {
         this.scene.stop(PRELOADER_SCENE_ID);
       });
     } else {
-      this.scene.start(UI_SCENE_ID);
       this.scene.start(LOBBY_SCENE_ID);
       this.scene.stop(PRELOADER_SCENE_ID);
     }
