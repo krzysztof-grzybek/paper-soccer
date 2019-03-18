@@ -4,7 +4,7 @@
   "description": "facebook instant game - paper soccer",
   "main": "index.html",
   "scripts": {
-    "start": "node ./server/build/index.js",
+    "start": "cross-env NODE_ENV=prod node ./server/build/index.js",
     "build": "cross-env NODE_ENV=prod tsc -p ./server/tsconfig.json",
     "start-be": "cross-env NODE_ENV=dev node --inspect --require ts-node/register  ./server/index.ts",
     "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
