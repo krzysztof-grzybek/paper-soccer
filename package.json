@@ -13,7 +13,7 @@
     "archive": "node ./scripts/archive.js",
     "upload": "node ./scripts/upload.js",
     "deploy": "npm run build && npm run archive && npm run upload",
-    "deploy-be": "npm run build && npm run archive && npm run upload",
+    "deploy-be": "git push heroku master",
     "lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
