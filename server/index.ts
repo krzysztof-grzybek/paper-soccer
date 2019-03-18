@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 
 const server = https.createServer(options, app);
-const io = socketIo(server);
+const io = socketIo(server, { origins: '*:*'});
 
 io.on('connection', socket => {
   console.log('User is connected');
