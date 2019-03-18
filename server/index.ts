@@ -1,3 +1,4 @@
+import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
 import https = require('https');
@@ -11,6 +12,7 @@ const options = {
 };
 
 const app = express();
+app.use(cors());
 
 const server = https.createServer(options, app);
 const io = socketIo(server);
