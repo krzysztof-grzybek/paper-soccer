@@ -4,14 +4,16 @@
   "description": "facebook instant game - paper soccer",
   "main": "index.html",
   "scripts": {
-    "start": "tsc -p ./server/tsconfig.json && node ./server/build/index.js",
+    "start": "node ./server/build/index.js",
+    "build": "tsc -p ./server/tsconfig.json",
     "start-be": "node --inspect --require ts-node/register  ./server/index.ts",
     "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
     "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
-    "build": "cross-env NODE_ENV=production webpack",
+    "build-fe": "cross-env NODE_ENV=production webpack",
     "archive": "node ./scripts/archive.js",
     "upload": "node ./scripts/upload.js",
     "deploy": "npm run build && npm run archive && npm run upload",
+    "deploy-be": "npm run build && npm run archive && npm run upload",
     "lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
