@@ -1,6 +1,7 @@
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
+import http = require('http');
 import https = require('https');
 import socketIo = require('socket.io');
 import {create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame} from './model';
@@ -14,7 +15,9 @@ const options = () => ({
 const app = express();
 app.use(cors());
 
-const server = https.createServer(process.env.NODE_ENV === 'prod' ? {} : options(), app);
+const server = process.env.NODE_ENV === 'prod'
+  ? http.createServer({}, app)
+  : https.createServer(options(), app);
 const io = socketIo(server, { origins: '*:*'});
 
 io.on('connection', socket => {
@@ -75,9 +78,8 @@ io.on('connection', socket => {
 });
 
 app.get('/', (req, res) => {
-  console.log('API check');
   res.send('PAPER-SOCCER');
 });
 
 /* tslint:disable:no-console */
-server.listen(port, () => console.log(`App super is listening on port ${port}!`));
+server.listen(port, () => console.log(`App is listening on port ${port}!`));
