@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "facebook instant game - paper soccer",
   "main": "index.html",
+  "engines": {
+    "node": "10.9.0"
+  },
   "scripts": {
     "start": "cross-env NODE_ENV=prod node ./server/build/index.js",
     "build": "cross-env NODE_ENV=prod tsc -p ./server/tsconfig.json",
