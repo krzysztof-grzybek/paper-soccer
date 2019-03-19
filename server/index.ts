@@ -21,7 +21,7 @@ const server = process.env.NODE_ENV === 'prod'
 const io = socketIo(server, { origins: '*:*'});
 
 io.on('connection', socket => {
-  console.log('User is connected');
+  console.log('User is connected !');
 
   let playerId: string | null = null;
   let contextId: string | null = null;
