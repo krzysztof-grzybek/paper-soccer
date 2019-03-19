@@ -11,7 +11,7 @@ class SocketService {
   private socket: SocketIOClient.Socket;
 
   constructor() {
-    this.socket = io(URL);
+    this.socket = io(URL, { transports: ['websocket', 'polling', 'flashsocket']});
   }
 
   public init(contextId: string, playerId: string): Promise<Game> {
