@@ -7,8 +7,8 @@
     "node": "10.9.0"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=prod node ./server/build/index.js",
-    "build": "cross-env NODE_ENV=prod tsc -p ./server/tsconfig.json",
+    "start": "cross-env NODE_ENV=prod node ./server/index.js",
+    "build": "cross-env NODE_ENV=prod tsc -p ./server/tsconfig.json ",
     "start-be": "cross-env NODE_ENV=dev node --inspect --require ts-node/register  ./server/index.ts",
     "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
     "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
