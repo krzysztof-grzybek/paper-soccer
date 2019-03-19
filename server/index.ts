@@ -74,5 +74,10 @@ io.on('connection', socket => {
 
 });
 
+app.get('/', (req, res) => {
+  console.log('API check');
+  res.send('PAPER-SOCCER');
+});
+
 /* tslint:disable:no-console */
-server.listen(port, () => console.log(`App is listening on port ${port}!`));
+server.listen(port, () => console.log(`App super is listening on port ${port}!`));

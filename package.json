@@ -12,7 +12,7 @@
     "build-fe": "cross-env NODE_ENV=production webpack",
     "archive": "node ./scripts/archive.js",
     "upload": "node ./scripts/upload.js",
-    "deploy": "npm run build && npm run archive && npm run upload",
+    "deploy": "npm run build-fe && npm run archive && npm run upload",
     "deploy-be": "git push heroku master",
     "lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
   },
