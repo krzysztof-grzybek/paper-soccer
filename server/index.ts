@@ -5,6 +5,7 @@ import http = require('http');
 import https = require('https');
 import socketIo = require('socket.io');
 import {create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame} from './model';
+import { router } from './bot';
 
 const port = process.env.PORT || 3001;
 const options = () => ({
@@ -14,6 +15,7 @@ const options = () => ({
 
 const app = express();
 app.use(cors());
+app.use('/bot', router);
 
 const server = process.env.NODE_ENV === 'prod'
   ? http.createServer({}, app)
