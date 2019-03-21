@@ -25,6 +25,10 @@ class UiScene extends Phaser.Scene {
     playerService.getOponentinfo().then(opponent => {
       this.opponentInfo = opponent;
       this.load.image('oponent', this.opponentInfo.image);
+      this.load.once('filecomplete-image-oponent', () => {
+        this.displayOpponentInfo();
+      }, this);
+      this.load.start();
     });
   }
 
@@ -41,7 +45,11 @@ class UiScene extends Phaser.Scene {
       playerService.getOponentinfo().then(opponent => {
         this.opponentInfo = opponent;
         this.load.image('oponent', this.opponentInfo.image);
-        this.displayOpponentInfo();
+
+        this.load.once('filecomplete-image-oponent', () => {
+          this.displayOpponentInfo();
+        }, this);
+        this.load.start();
       });
     });
   }
@@ -60,9 +68,10 @@ class UiScene extends Phaser.Scene {
   }
 
   private displayOpponentInfo() {
-    const text = this.add.text(this.game.canvas.width , 0, this.opponentInfo!.name);
+    const text = this.add.text(this.game.canvas.width, 0, this.opponentInfo!.name);
     text.setOrigin(1, 0);
     const image = this.add.image(this.game.canvas.width, 30, 'oponent');
+
     image.setDisplaySize(50, 50);
     image.setOrigin(1, 0);
   }

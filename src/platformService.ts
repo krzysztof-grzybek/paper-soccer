@@ -8,7 +8,7 @@ interface PlayerInfo {
 
 abstract class PlatformServiceAbstract {
   public abstract getCurrentPlayerInfo(): PlayerInfo;
-  public abstract getOponentinfo(): Promise<PlayerInfo>;
+  public abstract getOpponentInfo(): Promise<PlayerInfo>;
 }
 
 // @ts-ignore

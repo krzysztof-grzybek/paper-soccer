@@ -10,20 +10,21 @@ class FacebookService implements PlatformServiceAbstract {
     };
   }
 
-  public getOponentinfo() {
+  public getOpponentInfo() {
     return FBInstant.context.getPlayersAsync().then((players) => {
 
-      const oponent = players.find(p => p.getID() !== FBInstant.player.getID());
+      const opponent = players.find(p => p.getID() !== FBInstant.player.getID());
 
-      if (!oponent) {
+      if (!opponent) {
         throw new Error('Currently only messenger game is allowed.');
       }
+      console.log(opponent.getName());
 
       // TODO: figure out when these values could be zero
       return {
-        id: oponent.getID()!,
-        name: oponent.getName()!,
-        image: oponent.getPhoto()!,
+        id: opponent.getID()!,
+        name: opponent.getName()!,
+        image: opponent.getPhoto()!,
       };
     });
   }

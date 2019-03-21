@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 import cors = require('cors');
 import express = require('express');
 import fs = require('fs');
@@ -29,6 +31,7 @@ io.on('connection', socket => {
   let contextId: string | null = null;
 
   socket.on('init', data => {
+    console.log('init action');
     const { contextId: ctxId, playerId: pId} = data;
     const session = io.sockets.adapter.rooms[ctxId];
     if (session && session.length >= 2) {
@@ -46,13 +49,16 @@ io.on('connection', socket => {
       game = get(ctxId);
       if (!game.player2) {
         update(ctxId, { player2: pId });
+        updateGame(ctxId, { currentTurn: pId });
+        game = get(ctxId);
       }
     } else {
       game = create(ctxId, pId);
     }
-
+    console.log('game loaded response ' + ctxId + ' ' + playerId);
     socket.emit('game-loaded', game);
-    socket.emit('opponent-connected', playerId);
+    console.log('opponent connected response ' + ctxId + ' ' + playerId);
+    socket.to(contextId!).emit('opponent-connected', playerId);
   });
 
   socket.on('disconnect', () => {

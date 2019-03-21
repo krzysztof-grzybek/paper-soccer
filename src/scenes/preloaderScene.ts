@@ -16,7 +16,7 @@ class PreloaderScene extends Phaser.Scene {
     this.facebook.once('startgame', this.startGame, this);
     this.facebook.showLoadProgress(this);
 
-    this.load.image('zero2', '/assets/gif_soccer_ball_0100.gif');
+    this.load.image('ball', './assets/ball.png');
   }
 
   private startGame() {

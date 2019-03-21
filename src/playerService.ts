@@ -10,7 +10,7 @@ class PlayerService {
   }
 
   public getOponentinfo() {
-    return this.platform.getOponentinfo();
+    return this.platform.getOpponentInfo();
   }
 }
 

@@ -51,7 +51,7 @@ function updateGame(contextId: string, updateData: any) {
 }
 
 function isTurnOwnedBy(contextId: string, playerId: string) {
-  return get(contextId).game.currentTurn === playerId;
+  return get(contextId).game.currentTurn === playerId || get(contextId).game.currentTurn === null;
 }
 
 function getOpponent(ctxId: string, playerId: string) {

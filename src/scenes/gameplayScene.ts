@@ -136,11 +136,11 @@ class GameplayScene extends Phaser.Scene {
       localizations: {
         es_PL: 'Przeciwnik zrobił ruch!',
       },
-    }, '', '', 'next_turn', {});
+    }, 'ball', 0, 'next_turn', {});
 
     /* tslint:disable:no-console */
     this.facebook.once('update', () => console.log('update success'));
-    this.facebook.once('updatefail', () => console.log('update failure'));
+    this.facebook.once('updatefail', (e: any) => console.log(e));
   }
 }
 
