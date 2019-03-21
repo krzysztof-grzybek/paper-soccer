@@ -4,8 +4,8 @@ import fs = require('fs');
 import http = require('http');
 import https = require('https');
 import socketIo = require('socket.io');
-import {create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame} from './model';
 import { router } from './bot';
+import { create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame } from './model';
 
 const port = process.env.PORT || 3001;
 const options = () => ({

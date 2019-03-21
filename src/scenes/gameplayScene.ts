@@ -91,6 +91,7 @@ class GameplayScene extends Phaser.Scene {
       const scene = this.scene.get('GameEndScene') as GameEndScene;
       scene.setWin();
       socketService.sendMove({ type: 'win', history: this.trail.getHistory() });
+      this.notifyOpponent();
       return;
     }
 
@@ -99,6 +100,7 @@ class GameplayScene extends Phaser.Scene {
       const scene = this.scene.get('GameEndScene') as GameEndScene;
       scene.setLoss();
       socketService.sendMove({ type: 'loss', history: this.trail.getHistory() });
+      this.notifyOpponent();
       return;
     }
 
@@ -106,10 +108,12 @@ class GameplayScene extends Phaser.Scene {
       // display some info about waiting for other player and send message to server
       this.events.emit('player-change');
       socketService.sendMove({ type: 'progress', history: this.trail.getHistory() });
+      this.notifyOpponent();
       return;
     }
 
     this.prepareForNextMove(pointIndex);
+
   }
 
   private prepareForNextMove(pointIndex: number) {
@@ -124,6 +128,19 @@ class GameplayScene extends Phaser.Scene {
 
   private canMakeNextMove(pointIndex: number) {
     return this.board.isOnBand(pointIndex) || this.trail.wasPointVisited(pointIndex);
+  }
+
+  private notifyOpponent() {
+    this.facebook.update('Play', {
+      default: 'Opponent made a move!',
+      localizations: {
+        es_PL: 'Przeciwnik zrobił ruch!',
+      },
+    }, '', '', 'next_turn', {});
+
+    /* tslint:disable:no-console */
+    this.facebook.once('update', () => console.log('update success'));
+    this.facebook.once('updatefail', () => console.log('update failure'));
   }
 }
 

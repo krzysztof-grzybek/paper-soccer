@@ -1,8 +1,8 @@
 {
   "instant_games": {
     "custom_update_templates": {
-      "first_place": {
-        "example": "Player X just became the first place in game Y!"
+      "next_turn": {
+        "example": "Opponent made a move!"
       }
     },
     "bot": {
