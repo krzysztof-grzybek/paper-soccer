@@ -56,12 +56,8 @@ class GameplayScene extends Phaser.Scene {
         this.prepareForNextMove(history[history.length - 1]);
       } else if (type === 'win') {
         this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: true });
-        // const scene = this.scene.get(GAME_END_SCENE_ID) as GameEndScene;
-        // scene.setWin();
       } else if (type === 'loss') {
         this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: false });
-        // const scene = this.scene.get(GAME_END_SCENE_ID) as GameEndScene;
-        // scene.setLoss();
       }
     });
   }
@@ -87,18 +83,14 @@ class GameplayScene extends Phaser.Scene {
     const isLoss = this.board.isInGate(pointIndex, this.ownGate) || this.getAvailableMoves(pointIndex).length === 0;
 
     if (isWin) {
-      this.scene.switch('GameEndScene');
-      const scene = this.scene.get('GameEndScene') as GameEndScene;
-      scene.setWin();
+      this.scene.start(GAME_END_SCENE_ID, { won: true, state: 'initial' });
       socketService.sendMove({ type: 'win', history: this.trail.getHistory() });
       this.notifyOpponent();
       return;
     }
 
     if (isLoss) {
-      this.scene.switch('GameEndScene');
-      const scene = this.scene.get('GameEndScene') as GameEndScene;
-      scene.setLoss();
+      this.scene.start(GAME_END_SCENE_ID, { won: false, state: 'initial' });
       socketService.sendMove({ type: 'loss', history: this.trail.getHistory() });
       this.notifyOpponent();
       return;

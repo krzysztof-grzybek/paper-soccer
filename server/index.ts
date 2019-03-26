@@ -8,6 +8,7 @@ import https = require('https');
 import socketIo = require('socket.io');
 import { router } from './bot';
 import {
+  challenge,
   create,
   exists,
   get,
@@ -17,7 +18,7 @@ import {
   setLostMove,
   setWinMove,
   update,
-  updateGame, challenge
+  updateGame,
 } from './model';
 
 const port = process.env.PORT || 3001;
@@ -104,6 +105,12 @@ io.on('connection', socket => {
 
     challenge(contextId!, playerId!);
     socket.to(contextId!).emit('challenged', { challengedAgainBy: playerId });
+  });
+
+  socket.on('start-new-game', callback => {
+    const game = create(contextId!, playerId!);
+    callback(game);
+    socket.to(contextId!).emit('new-game-started', game);
   });
 
 });

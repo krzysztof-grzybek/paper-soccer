@@ -23,7 +23,7 @@ class GameEndScene extends Phaser.Scene {
   public create(data: InitialData) {
     const middleX = this.game.canvas.width / 2;
     const middleY = this.game.canvas.height / 2;
-    this.button = this.add.text(middleX, middleY + 40, '');
+    this.button = this.add.text(middleX, middleY + 40, '------'); // temporary for pointer events
     this.button.setInteractive();
 
     if (data.won) {
@@ -35,20 +35,34 @@ class GameEndScene extends Phaser.Scene {
     switch (data.state) {
       case 'initial':
         this.setInitialState();
+        break;
       case 'challenged-by-opponent':
         this.setChallengedByOpponentState();
+        break;
       case 'waiting-for-opponent-accept':
         this.setWaitingForOpponentAcceptState();
+        break;
     }
+
+    socketService.onChallenge(() => {
+      this.setChallengedByOpponentState();
+    });
+
+    socketService.onNewGameStarted((game) => {
+      this.scene.start(GAMEPLAY_SCENE_ID, game);
+      this.scene.stop(GAME_END_SCENE_ID);
+    });
 
     this.button.on('pointerdown', () => {
       if (this.state === 'initial') {
         socketService.challengeOpponent();
         this.setWaitingForOpponentAcceptState();
+      } else if (this.state === 'challenged-by-opponent') {
+        socketService.startNewGame(game => {
+          this.scene.start(GAMEPLAY_SCENE_ID, game);
+          this.scene.stop(GAME_END_SCENE_ID);
+        });
       }
-      // const scene = this.scene.get(GAMEPLAY_SCENE_ID);
-      // scene.scene.stop();
-      // this.scene.switch(GAMEPLAY_SCENE_ID);
     });
   }
 
@@ -88,4 +102,4 @@ class GameEndScene extends Phaser.Scene {
   }
 }
 
-export { GameEndScene, GAME_END_SCENE_ID };
+export { GameEndScene, GAME_END_SCENE_ID, state as gameEndSceneState};

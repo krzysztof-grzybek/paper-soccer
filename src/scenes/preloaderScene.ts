@@ -2,7 +2,7 @@ import { socketService } from '../socketService';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 import { LOBBY_SCENE_ID } from './lobbyScene';
 import { UI_SCENE_ID } from './uiScene';
-import {GAME_END_SCENE_ID} from "./gameEndScene";
+import { GAME_END_SCENE_ID, gameEndSceneState } from './gameEndScene';
 
 const PRELOADER_SCENE_ID = 'PreloaderScene';
 
@@ -27,7 +27,10 @@ class PreloaderScene extends Phaser.Scene {
         if (game.game.state === 'progress') {
           this.scene.start(GAMEPLAY_SCENE_ID, game);
         } else if (game.game.state === 'end') {
-          this.scene.start(GAME_END_SCENE_ID, game);
+          const won = game.game.winner === this.facebook.getPlayerID();
+          const opponentId = game.player1 === this.facebook.getPlayerID() ? game.player2 : game.player1;
+          const state = this.getGameEndState(game.game.challengedAgainBy, this.facebook.getPlayerID(), opponentId);
+          this.scene.start(GAME_END_SCENE_ID, { won, state });
         }
 
         this.scene.stop(PRELOADER_SCENE_ID);
@@ -36,6 +39,18 @@ class PreloaderScene extends Phaser.Scene {
       this.scene.start(LOBBY_SCENE_ID);
       this.scene.stop(PRELOADER_SCENE_ID);
     }
+   }
+
+  private getGameEndState(challengedAgainBy: string, playerId: string, opponentId: string): gameEndSceneState {
+      if (challengedAgainBy === null) {
+          return 'initial';
+      } else if (challengedAgainBy === playerId) {
+          return 'waiting-for-opponent-accept';
+      } else if (challengedAgainBy === opponentId) {
+          return 'challenged-by-opponent';
+      } else {
+          throw new Error('Something went wrong');
+      }
   }
 }
 
