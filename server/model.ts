@@ -5,14 +5,13 @@ function createNewGame(contextId: string, playerId: string) {
     contextId,
     player1: playerId,
     player2: null,
-    lastWinPlayer: null,
     game: {
       initiator: playerId,
       currentTurn: playerId,
       state: 'progress',
       winner: null,
+      challengedAgainBy: null,
       history: [],
-      isFresh: true,
     },
   };
 }
@@ -69,4 +68,13 @@ function setLostMove(contextId: string, playerId: string, movesHistory: number[]
   updateGame(contextId, { winner, state: 'end', history: movesHistory });
 }
 
-export { create, exists, get, getOpponent, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };
+function getGameState(contextId: string) {
+  const game = get(contextId);
+  return game.game.state;
+}
+
+function challenge(contextId: string, playerId: string) {
+  updateGame(contextId, { challengedAgainBy: playerId });
+}
+
+export { challenge, create, exists, get, getOpponent, getGameState, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };

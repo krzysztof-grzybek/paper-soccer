@@ -41,6 +41,10 @@ class SocketService {
       callback(playerId);
     });
   }
+
+  public challengeOpponent() {
+    this.socket.emit('challenge');
+  }
 }
 
 const socketService = new SocketService();

@@ -7,7 +7,18 @@ import http = require('http');
 import https = require('https');
 import socketIo = require('socket.io');
 import { router } from './bot';
-import { create, exists, get, getOpponent, isTurnOwnedBy, setLostMove, setWinMove, update, updateGame } from './model';
+import {
+  create,
+  exists,
+  get,
+  getOpponent,
+  getGameState,
+  isTurnOwnedBy,
+  setLostMove,
+  setWinMove,
+  update,
+  updateGame, challenge
+} from './model';
 
 const port = process.env.PORT || 3001;
 const options = () => ({
@@ -81,6 +92,18 @@ io.on('connection', socket => {
       setLostMove(contextId!, playerId!, history);
       socket.to(contextId!).emit('opponent-moved', { type: 'win', history });
     }
+  });
+
+  socket.on('challenge', () => {
+    const winner = getGameState(contextId!);
+
+    if (winner !== 'end') {
+      console.error('Cannot challenge during the game');
+      return;
+    }
+
+    challenge(contextId!, playerId!);
+    socket.to(contextId!).emit('challenged', { challengedAgainBy: playerId });
   });
 
 });

@@ -2,7 +2,7 @@ import { Board } from '../board/board';
 import { socketService } from '../socketService';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
-import { GameEndScene } from './gameEndScene';
+import {GAME_END_SCENE_ID, GameEndScene} from './gameEndScene';
 
 const GAMEPLAY_SCENE_ID = 'GameplayScene';
 
@@ -55,13 +55,13 @@ class GameplayScene extends Phaser.Scene {
       if (type === 'progress') {
         this.prepareForNextMove(history[history.length - 1]);
       } else if (type === 'win') {
-        this.scene.switch('GameEndScene');
-        const scene = this.scene.get('GameEndScene') as GameEndScene;
-        scene.setWin();
+        this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: true });
+        // const scene = this.scene.get(GAME_END_SCENE_ID) as GameEndScene;
+        // scene.setWin();
       } else if (type === 'loss') {
-        this.scene.switch('GameEndScene');
-        const scene = this.scene.get('GameEndScene') as GameEndScene;
-        scene.setLoss();
+        this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: false });
+        // const scene = this.scene.get(GAME_END_SCENE_ID) as GameEndScene;
+        // scene.setLoss();
       }
     });
   }
