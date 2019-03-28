@@ -7,17 +7,17 @@
     "node": "10.9.0"
   },
   "scripts": {
+    "server-dev": "cross-env NODE_ENV=dev nodemon -w ./server --ignore server/database.json --inspect --require ts-node/register  ./server/index.ts",
     "start": "cross-env NODE_ENV=prod node ./server/index.js",
     "build": "cross-env NODE_ENV=prod tsc -p ./server/tsconfig.json ",
-    "start-be": "cross-env NODE_ENV=dev node --inspect --require ts-node/register  ./server/index.ts",
-    "start-fe": "cross-env NODE_ENV=local webpack-dev-server",
-    "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
-    "build-fe": "cross-env NODE_ENV=production webpack",
-    "archive": "node ./scripts/archive.js",
-    "upload": "node ./scripts/upload.js",
-    "deploy": "npm run build-fe && npm run archive && npm run upload",
-    "deploy-be": "git push heroku master",
-    "lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
+    "server-deploy": "git push heroku master",
+    "client-dev": "cross-env NODE_ENV=local webpack-dev-server",
+    "client-test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
+    "client-build": "cross-env NODE_ENV=production webpack",
+    "client-archive": "node ./scripts/archive.js",
+    "client-upload": "node ./scripts/upload.js",
+    "client-deploy": "npm run client-build && .npm run client-archive && npm run client-upload",
+    "client-lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^1.18.10",
     "open": "0.0.5",
     "phaser3-docs": "github:photonstorm/phaser3-docs",
     "ts-loader": "^5.3.3",
