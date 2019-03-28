@@ -1,0 +1,59 @@
+{
+  "name": "paper-soccer",
+  "version": "1.0.0",
+  "description": "facebook instant game - paper soccer client",
+  "main": "index.html",
+  "engines": {
+    "node": "10.9.0"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=local webpack-dev-server",
+    "test-player": "cross-env NODE_ENV=test-player webpack-dev-server",
+    "build": "cross-env NODE_ENV=production webpack",
+    "archive": "node ./scripts/archive.js",
+    "upload": "node ./scripts/upload.js",
+    "deploy": "npm run build && .npm run archive && npm run upload",
+    "lint": "tslint -t stylish -c tslint.json 'src/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzysztof-grzybek/paper-soccer.git"
+  },
+  "keywords": [
+    "instant",
+    "game",
+    "facebook",
+    "paper",
+    "soccer"
+  ],
+  "author": "Krzysztof Grzybek & Maciej Grzybek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krzysztof-grzybek/paper-soccer/issues"
+  },
+  "homepage": "https://github.com/krzysztof-grzybek/paper-soccer#readme",
+  "devDependencies": {
+    "@types/facebook-instant-games": "^6.2.2",
+    "@types/node": "^11.12.0",
+    "@types/socket.io-client": "^1.4.32",
+    "archiver": "^3.0.0",
+    "clean-webpack-plugin": "^1.0.1",
+    "copy-webpack-plugin": "^5.0.0",
+    "cross-env": "^5.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "open": "0.0.5",
+    "phaser3-docs": "github:photonstorm/phaser3-docs",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.12.1",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "phaser": "^3.16.2",
+    "socket.io-client": "^2.2.0"
+  }
+}

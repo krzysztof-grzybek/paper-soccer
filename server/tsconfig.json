@@ -1,10 +1,15 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
     "outDir": "./",
-    "lib": ["es7"]
+    "sourceMap": true,
+    "lib": ["es7"],
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
-  "include": ["./server/**/*"],
+  "include": ["./**/*"],
   "files": ["./index.ts"],
   "exclude": ["node_modules"]
 }

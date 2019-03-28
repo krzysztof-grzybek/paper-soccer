@@ -1,8 +1,5 @@
 node_modules/
-dist/
-archives/
-secret.json
-cert.pem
-key.pem
+client/dist/
+client/archives/
+client/secret.json
 .idea/
-server/build/

@@ -51,7 +51,7 @@ module.exports = {
     new CleanWebpackPlugin([config.buildDirectory]),
     new HtmlWebpackPlugin({
       title: 'Paper soccer',
-      template: 'index.html',
+      template: './index.html',
       sdkPath: sdkPath,
     }),
     new CopyPlugin([
