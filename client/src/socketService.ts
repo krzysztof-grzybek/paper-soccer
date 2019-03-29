@@ -28,12 +28,12 @@ class SocketService {
     });
   }
 
-  public sendMove(moveData: { type: moveType, history: number[]}) {
+  public sendMove(moveData: { type: moveType, trailState: number[]}) {
     this.socket.emit('move', moveData);
   }
 
-  public onOpponentMove(callback: (data: { type: moveType, history: number[]}) => void) {
-    this.socket.on('opponent-moved', (moveData: { type: moveType, history: number[]}) => {
+  public onOpponentMove(callback: (data: { type: moveType, trailState: number[]}) => void) {
+    this.socket.on('opponent-moved', (moveData: { type: moveType, trailState: number[]}) => {
       callback(moveData);
     });
   }

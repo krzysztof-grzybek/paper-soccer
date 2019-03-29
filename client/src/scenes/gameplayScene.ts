@@ -2,7 +2,7 @@ import { Board } from '../board/board';
 import { socketService } from '../socketService';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
-import {GAME_END_SCENE_ID, GameEndScene} from './gameEndScene';
+import { GAME_END_SCENE_ID } from './gameEndScene';
 
 const GAMEPLAY_SCENE_ID = 'GameplayScene';
 
@@ -11,7 +11,7 @@ interface Game {
   isPlayerTurn: boolean;
   isFirstPlayer: boolean;
   game: {
-    history: number[];
+    trailState: number[];
   };
 }
 
@@ -41,7 +41,7 @@ class GameplayScene extends Phaser.Scene {
     this.aimGate = game.isFirstPlayer ? 2 : 1;
     this.ownGate = game.isFirstPlayer ? 1 : 2;
 
-    this.trail.addMissing(game.game.history);
+    this.trail.addMissing(game.game.trailState);
     const lastTrailPoint = this.trail.getLastPoint();
     const startingPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
     if (game.isPlayerTurn) {
@@ -50,10 +50,10 @@ class GameplayScene extends Phaser.Scene {
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
 
-    socketService.onOpponentMove(({ type, history }) => {
-      this.trail.addMissing(history);
+    socketService.onOpponentMove(({ type, trailState }) => {
+      this.trail.addMissing(trailState);
       if (type === 'progress') {
-        this.prepareForNextMove(history[history.length - 1]);
+        this.prepareForNextMove(trailState[trailState.length - 1]);
       } else if (type === 'win') {
         this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: true });
       } else if (type === 'loss') {
@@ -84,14 +84,14 @@ class GameplayScene extends Phaser.Scene {
 
     if (isWin) {
       this.scene.start(GAME_END_SCENE_ID, { won: true, state: 'initial' });
-      socketService.sendMove({ type: 'win', history: this.trail.getHistory() });
+      socketService.sendMove({ type: 'win', trailState: this.trail.getHistory() });
       this.notifyOpponent();
       return;
     }
 
     if (isLoss) {
       this.scene.start(GAME_END_SCENE_ID, { won: false, state: 'initial' });
-      socketService.sendMove({ type: 'loss', history: this.trail.getHistory() });
+      socketService.sendMove({ type: 'loss', trailState: this.trail.getHistory() });
       this.notifyOpponent();
       return;
     }
@@ -99,7 +99,7 @@ class GameplayScene extends Phaser.Scene {
     if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
       this.events.emit('player-change');
-      socketService.sendMove({ type: 'progress', history: this.trail.getHistory() });
+      socketService.sendMove({ type: 'progress', trailState: this.trail.getHistory() });
       this.notifyOpponent();
       return;
     }

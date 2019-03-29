@@ -54,21 +54,21 @@ function controller(socket: Socket) {
       socket.leave(contextId!);
   });
 
-  socket.on('move', ({ type, history }) => {
+  socket.on('move', ({ type, trailState }) => {
     if (!isTurnOwnedBy(contextId!, playerId!)) {
       return;
     }
 
     if (type === 'progress') {
       const opponent = getOpponent(contextId!, playerId!);
-      updateGame(contextId!, { currentTurn: opponent, history });
-      socket.to(contextId!).emit('opponent-moved', { type: 'progress', history });
+      updateGame(contextId!, { currentTurn: opponent, trailState });
+      socket.to(contextId!).emit('opponent-moved', { type: 'progress', trailState });
     } else if (type === 'win') {
-      setWinMove(contextId!, playerId!, history);
-      socket.to(contextId!).emit('opponent-moved', { type: 'loss', history });
+      setWinMove(contextId!, playerId!, trailState);
+      socket.to(contextId!).emit('opponent-moved', { type: 'loss', trailState });
     } else if (type === 'loss') {
-      setLostMove(contextId!, playerId!, history);
-      socket.to(contextId!).emit('opponent-moved', { type: 'win', history });
+      setLostMove(contextId!, playerId!, trailState);
+      socket.to(contextId!).emit('opponent-moved', { type: 'win', trailState });
     }
   });
 

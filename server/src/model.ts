@@ -1,6 +1,24 @@
 import fs = require('fs');
 
-function createNewGame(contextId: string, playerId: string) {
+type player = string;
+
+interface Game {
+  initiator: player;
+  currentTurn: player;
+  state: 'progress' | 'end';
+  winner: player | null;
+  challengedAgainBy: player | null;
+  trailState: number[]
+}
+
+interface Context {
+  contextId: string;
+  player1: player;
+  player2: player | null;
+  game: Game;
+}
+
+function createContext(contextId: string, playerId: string): Context {
   return {
     contextId,
     player1: playerId,
@@ -11,7 +29,7 @@ function createNewGame(contextId: string, playerId: string) {
       state: 'progress',
       winner: null,
       challengedAgainBy: null,
-      history: [],
+      trailState: [],
     },
   };
 }
@@ -29,7 +47,7 @@ function get(contextId: string) {
 
 function create(contextId: string, playerId: string) {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
-  const game = createNewGame(contextId, playerId);
+  const game = createContext(contextId, playerId);
   db[contextId] = game;
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
   return game;
@@ -58,14 +76,14 @@ function getOpponent(ctxId: string, playerId: string) {
   return game.player1 === playerId ? game.player2 : game.player1;
 }
 
-function setWinMove(contextId: string, playerId: string, movesHistory: number[]) {
-  updateGame(contextId, { winner: playerId, state: 'end', history: movesHistory });
+function setWinMove(contextId: string, playerId: string, trailState: number[]) {
+  updateGame(contextId, { winner: playerId, state: 'end', trailState });
 }
 
-function setLostMove(contextId: string, playerId: string, movesHistory: number[]) {
+function setLostMove(contextId: string, playerId: string, trailState: number[]) {
   const game = get(contextId);
   const winner = game.player1 === playerId ? game.player2 : game.player1;
-  updateGame(contextId, { winner, state: 'end', history: movesHistory });
+  updateGame(contextId, { winner, state: 'end', trailState });
 }
 
 function getGameState(contextId: string) {

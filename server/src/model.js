@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
-function createNewGame(contextId, playerId) {
+function createContext(contextId, playerId) {
     return {
         contextId: contextId,
         player1: playerId,
@@ -23,7 +23,7 @@ function createNewGame(contextId, playerId) {
             state: 'progress',
             winner: null,
             challengedAgainBy: null,
-            history: [],
+            trailState: [],
         },
     };
 }
@@ -40,7 +40,7 @@ function get(contextId) {
 exports.get = get;
 function create(contextId, playerId) {
     var db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
-    var game = createNewGame(contextId, playerId);
+    var game = createContext(contextId, playerId);
     db[contextId] = game;
     fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
     return game;
@@ -69,14 +69,14 @@ function getOpponent(ctxId, playerId) {
     return game.player1 === playerId ? game.player2 : game.player1;
 }
 exports.getOpponent = getOpponent;
-function setWinMove(contextId, playerId, movesHistory) {
-    updateGame(contextId, { winner: playerId, state: 'end', history: movesHistory });
+function setWinMove(contextId, playerId, trailState) {
+    updateGame(contextId, { winner: playerId, state: 'end', trailState: trailState });
 }
 exports.setWinMove = setWinMove;
-function setLostMove(contextId, playerId, movesHistory) {
+function setLostMove(contextId, playerId, trailState) {
     var game = get(contextId);
     var winner = game.player1 === playerId ? game.player2 : game.player1;
-    updateGame(contextId, { winner: winner, state: 'end', history: movesHistory });
+    updateGame(contextId, { winner: winner, state: 'end', trailState: trailState });
 }
 exports.setLostMove = setLostMove;
 function getGameState(contextId) {
