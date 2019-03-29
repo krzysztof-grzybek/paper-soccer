@@ -1,42 +1,19 @@
-/* tslint:disable:no-console */
-
-import cors = require('cors');
-import express = require('express');
-import fs = require('fs');
-import http = require('http');
-import https = require('https');
-import socketIo = require('socket.io');
-import { router } from './bot';
+import { Socket } from 'socket.io';
 import {
   challenge,
   create,
   exists,
   get,
-  getOpponent,
   getGameState,
+  getOpponent,
   isTurnOwnedBy,
   setLostMove,
   setWinMove,
   update,
-  updateGame,
+  updateGame
 } from './model';
 
-const port = process.env.PORT || 3001;
-const options = () => ({
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
-});
-
-const app = express();
-app.use(cors());
-app.use('/bot', router);
-
-const server = process.env.NODE_ENV === 'prod'
-  ? http.createServer({}, app)
-  : https.createServer(options(), app);
-const io = socketIo(server, { origins: '*:*'});
-
-io.on('connection', socket => {
+function controller(socket: Socket) {
   console.log('User is connected !');
 
   let playerId: string | null = null;
@@ -45,7 +22,7 @@ io.on('connection', socket => {
   socket.on('init', data => {
     console.log('init action');
     const { contextId: ctxId, playerId: pId} = data;
-    const session = io.sockets.adapter.rooms[ctxId];
+    const session = socket.adapter.rooms[ctxId];
     if (session && session.length >= 2) {
       console.log('Error - to many people in the room');
       return;
@@ -74,7 +51,7 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    socket.leave(contextId!);
+      socket.leave(contextId!);
   });
 
   socket.on('move', ({ type, history }) => {
@@ -113,11 +90,6 @@ io.on('connection', socket => {
     socket.to(contextId!).emit('new-game-started', game);
   });
 
-});
+}
 
-app.get('/', (req, res) => {
-  res.send('PAPER-SOCCER');
-});
-
-/* tslint:disable:no-console */
-server.listen(port, () => console.log(`App is listening on port ${port}!`));
+export { controller };

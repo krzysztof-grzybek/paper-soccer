@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "outDir": "./",
+    "outDir": "./src",
     "sourceMap": true,
     "lib": ["es7"],
     "strict": true,
@@ -10,6 +10,6 @@
     "esModuleInterop": true
   },
   "include": ["./**/*"],
-  "files": ["./index.ts"],
+  "files": ["./src/index.ts"],
   "exclude": ["node_modules"]
 }
