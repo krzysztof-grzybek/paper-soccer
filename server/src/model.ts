@@ -40,27 +40,27 @@ function exists(contextId: string) {
   return Boolean(db[contextId]);
 }
 
-function get(contextId: string) {
+function get(contextId: string): Context {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
   return db[contextId];
 }
 
-function create(contextId: string, playerId: string) {
+function create(contextId: string, playerId: player): Context {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
-  const game = createContext(contextId, playerId);
-  db[contextId] = game;
+  const context = createContext(contextId, playerId);
+  db[contextId] = context;
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
-  return game;
+  return context;
 }
 
-function update(contextId: string, updateData: any) {
+function update(contextId: string, updateData: Partial<Context>): Context {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
   db[contextId] = { ...db[contextId], ...updateData };
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
   return db[contextId];
 }
 
-function updateGame(contextId: string, updateData: any) {
+function updateGame(contextId: string, updateData: Partial<Game>): Context {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
   db[contextId].game = { ...(db[contextId].game), ...updateData };
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
@@ -71,16 +71,21 @@ function isTurnOwnedBy(contextId: string, playerId: string) {
   return get(contextId).game.currentTurn === playerId || get(contextId).game.currentTurn === null;
 }
 
-function getOpponent(ctxId: string, playerId: string) {
+function getOpponent(ctxId: string, playerId: player): player {
   const game = get(ctxId);
-  return game.player1 === playerId ? game.player2 : game.player1;
+  const player = game.player1 === playerId ? game.player2 : game.player1;
+  if (player === null) {
+    throw new Error('Opponent not known');
+  }
+
+  return player;
 }
 
-function setWinMove(contextId: string, playerId: string, trailState: number[]) {
+function setWinMove(contextId: string, playerId: player, trailState: number[]) {
   updateGame(contextId, { winner: playerId, state: 'end', trailState });
 }
 
-function setLostMove(contextId: string, playerId: string, trailState: number[]) {
+function setLostMove(contextId: string, playerId: player, trailState: number[]) {
   const game = get(contextId);
   const winner = game.player1 === playerId ? game.player2 : game.player1;
   updateGame(contextId, { winner, state: 'end', trailState });
@@ -91,8 +96,8 @@ function getGameState(contextId: string) {
   return game.game.state;
 }
 
-function challenge(contextId: string, playerId: string) {
+function challenge(contextId: string, playerId: player) {
   updateGame(contextId, { challengedAgainBy: playerId });
 }
 
-export { challenge, create, exists, get, getOpponent, getGameState, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };
+export { Context, Game, challenge, create, exists, get, getOpponent, getGameState, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };

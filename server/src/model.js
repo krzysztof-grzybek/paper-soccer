@@ -40,10 +40,10 @@ function get(contextId) {
 exports.get = get;
 function create(contextId, playerId) {
     var db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
-    var game = createContext(contextId, playerId);
-    db[contextId] = game;
+    var context = createContext(contextId, playerId);
+    db[contextId] = context;
     fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
-    return game;
+    return context;
 }
 exports.create = create;
 function update(contextId, updateData) {
@@ -66,7 +66,11 @@ function isTurnOwnedBy(contextId, playerId) {
 exports.isTurnOwnedBy = isTurnOwnedBy;
 function getOpponent(ctxId, playerId) {
     var game = get(ctxId);
-    return game.player1 === playerId ? game.player2 : game.player1;
+    var player = game.player1 === playerId ? game.player2 : game.player1;
+    if (player === null) {
+        throw new Error('Opponent not known');
+    }
+    return player;
 }
 exports.getOpponent = getOpponent;
 function setWinMove(contextId, playerId, trailState) {
