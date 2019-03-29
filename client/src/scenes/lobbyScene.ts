@@ -12,7 +12,6 @@ class LobbyScene extends Phaser.Scene {
   }
 
   public create() {
-    // TODO: remove facebook plugin calls in favor to platform plugin
     const text = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
@@ -25,9 +24,9 @@ class LobbyScene extends Phaser.Scene {
     });
 
     this.facebook.on('choose', (contextID: string) => {
-      socketService.init(contextID, this.facebook.playerID).then(game => {
+      socketService.init(contextID, this.facebook.playerID).then(context => {
         this.scene.start(UI_SCENE_ID);
-        this.scene.start(GAMEPLAY_SCENE_ID, game);
+        this.scene.start(GAMEPLAY_SCENE_ID, context);
         this.scene.stop(LOBBY_SCENE_ID);
       });
     });

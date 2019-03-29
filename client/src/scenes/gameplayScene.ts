@@ -1,19 +1,10 @@
 import { Board } from '../board/board';
-import { socketService } from '../socketService';
+import { PlayerContext, socketService} from '../socketService';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
 import { GAME_END_SCENE_ID } from './gameEndScene';
 
 const GAMEPLAY_SCENE_ID = 'GameplayScene';
-
-interface Game {
-  id: string;
-  isPlayerTurn: boolean;
-  isFirstPlayer: boolean;
-  game: {
-    trailState: number[];
-  };
-}
 
 class GameplayScene extends Phaser.Scene {
   private board!: Board;
@@ -30,21 +21,21 @@ class GameplayScene extends Phaser.Scene {
     });
   }
 
-  public create(game: Game): void {
+  public create(context: PlayerContext): void {
     const { position, size } = this.getSceneRenderConfig();
     this.cameras.main.setPosition(position.x, position.y);
 
-    this.board = new Board(this, size, !game.isFirstPlayer);
+    this.board = new Board(this, size, !context.isFirstPlayer);
     this.touchIndicators = new TouchIndicators(this);
     this.trail = new Trail(this, this.board);
 
-    this.aimGate = game.isFirstPlayer ? 2 : 1;
-    this.ownGate = game.isFirstPlayer ? 1 : 2;
+    this.aimGate = context.isFirstPlayer ? 2 : 1;
+    this.ownGate = context.isFirstPlayer ? 1 : 2;
 
-    this.trail.addMissing(game.game.trailState);
+    this.trail.addMissing(context.game.trailState);
     const lastTrailPoint = this.trail.getLastPoint();
     const startingPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
-    if (game.isPlayerTurn) {
+    if (context.isPlayerTurn) {
       this.prepareForNextMove(startingPoint);
     }
 

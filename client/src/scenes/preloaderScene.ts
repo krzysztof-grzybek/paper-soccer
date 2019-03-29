@@ -6,7 +6,6 @@ import { GAME_END_SCENE_ID, gameEndSceneState } from './gameEndScene';
 
 const PRELOADER_SCENE_ID = 'PreloaderScene';
 
-// TODO: remove facebook plugin calls in favor to platform plugin
 class PreloaderScene extends Phaser.Scene {
 
   constructor() {
@@ -22,14 +21,14 @@ class PreloaderScene extends Phaser.Scene {
 
   private startGame() {
     if (this.facebook.contextType === 'THREAD') {
-      socketService.init(this.facebook.contextID, this.facebook.playerID).then(game => {
+      socketService.init(this.facebook.contextID, this.facebook.playerID).then(context => {
         this.scene.start(UI_SCENE_ID);
-        if (game.game.state === 'progress') {
-          this.scene.start(GAMEPLAY_SCENE_ID, game);
-        } else if (game.game.state === 'end') {
-          const won = game.game.winner === this.facebook.getPlayerID();
-          const opponentId = game.player1 === this.facebook.getPlayerID() ? game.player2 : game.player1;
-          const state = this.getGameEndState(game.game.challengedAgainBy, this.facebook.getPlayerID(), opponentId);
+        if (context.game.state === 'progress') {
+          this.scene.start(GAMEPLAY_SCENE_ID, context);
+        } else if (context.game.state === 'end') {
+          const won = context.game.winner === this.facebook.getPlayerID();
+          const opponentId = context.player1 === this.facebook.getPlayerID() ? context.player2! : context.player1!;
+          const state = this.getGameEndState(context.game.challengedAgainBy, this.facebook.getPlayerID(), opponentId);
           this.scene.start(GAME_END_SCENE_ID, { won, state });
         }
 
@@ -41,7 +40,7 @@ class PreloaderScene extends Phaser.Scene {
     }
    }
 
-  private getGameEndState(challengedAgainBy: string, playerId: string, opponentId: string): gameEndSceneState {
+  private getGameEndState(challengedAgainBy: string | null, playerId: string, opponentId: string): gameEndSceneState {
       if (challengedAgainBy === null) {
           return 'initial';
       } else if (challengedAgainBy === playerId) {
