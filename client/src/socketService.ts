@@ -11,7 +11,7 @@ interface Game {
   state: 'progress' | 'end';
   winner: player | null;
   challengedAgainBy: player | null;
-  trailState: number[]
+  trailState: number[];
 }
 
 interface Context {
@@ -45,7 +45,7 @@ class SocketService {
         resolve({
           ...context,
           isPlayerTurn: context.game.currentTurn === playerId,
-          isFirstPlayer: context.player1 === playerId
+          isFirstPlayer: context.player1 === playerId,
         });
       });
     });
@@ -76,7 +76,7 @@ class SocketService {
       callback({
         ...context,
         isPlayerTurn: context.game.currentTurn === this.playerId,
-        isFirstPlayer: context.player1 === this.playerId
+        isFirstPlayer: context.player1 === this.playerId,
       });
     });
   }
@@ -92,7 +92,7 @@ class SocketService {
       callback({
         ...context,
         isPlayerTurn: context.game.currentTurn === this.playerId,
-        isFirstPlayer: context.player1 === this.playerId
+        isFirstPlayer: context.player1 === this.playerId,
       });
     });
   }

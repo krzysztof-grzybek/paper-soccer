@@ -2,7 +2,6 @@ import 'phaser';
 /* tslint:disable:no-submodule-imports */
 import 'phaser/plugins/fbinstant/src/FacebookInstantGamesPlugin';
 
-import { bootstrap } from './platformService';
 import { GameEndScene } from './scenes/gameEndScene';
 import { GameplayScene } from './scenes/gameplayScene';
 import { LobbyScene } from './scenes/lobbyScene';
@@ -15,12 +14,6 @@ const config: GameConfig = {
   type: Phaser.AUTO,
   scene: [PreloaderScene, GameplayScene, UiScene, GameEndScene, LobbyScene],
   backgroundColor: '#00d801',
-  physics: {
-    arcade: {
-      gravity: { y: 200 },
-    },
-    default: 'arcade',
-  },
 };
 
 export class Game extends Phaser.Game {
@@ -30,6 +23,5 @@ export class Game extends Phaser.Game {
 }
 
 FBInstant.initializeAsync().then(() => {
-  bootstrap();
   new Game(config);
 });

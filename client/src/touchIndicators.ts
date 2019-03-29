@@ -12,8 +12,7 @@ class TouchIndicators {
   private touchEventEmitter = new Phaser.Events.EventEmitter();
   private indicators: Phaser.GameObjects.Graphics[] = [];
 
-  constructor(private scene: Phaser.Scene) {
-  }
+  constructor(private scene: Phaser.Scene) {}
 
   public render(data: IndicatorData[]) {
     data.forEach(d => {
@@ -42,7 +41,7 @@ class TouchIndicators {
     indicator.strokeCircle(data.position.x, data.position.y, RADIUS);
     indicator.setInteractive(shape, Phaser.Geom.Circle.Contains);
 
-    indicator.on('pointerdown', (i: Phaser.GameObjects.Graphics) => {
+    indicator.once('pointerdown', (i: Phaser.GameObjects.Graphics) => {
       this.touchEventEmitter.emit('touch', data);
     });
 

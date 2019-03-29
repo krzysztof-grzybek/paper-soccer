@@ -75,14 +75,14 @@ class GameplayScene extends Phaser.Scene {
 
     if (isWin) {
       this.scene.start(GAME_END_SCENE_ID, { won: true, state: 'initial' });
-      socketService.sendMove({ type: 'win', trailState: this.trail.getHistory() });
+      socketService.sendMove({ type: 'win', trailState: this.trail.getState() });
       this.notifyOpponent();
       return;
     }
 
     if (isLoss) {
       this.scene.start(GAME_END_SCENE_ID, { won: false, state: 'initial' });
-      socketService.sendMove({ type: 'loss', trailState: this.trail.getHistory() });
+      socketService.sendMove({ type: 'loss', trailState: this.trail.getState() });
       this.notifyOpponent();
       return;
     }
@@ -90,7 +90,7 @@ class GameplayScene extends Phaser.Scene {
     if (isLastMoveInTurn) {
       // display some info about waiting for other player and send message to server
       this.events.emit('player-change');
-      socketService.sendMove({ type: 'progress', trailState: this.trail.getHistory() });
+      socketService.sendMove({ type: 'progress', trailState: this.trail.getState() });
       this.notifyOpponent();
       return;
     }

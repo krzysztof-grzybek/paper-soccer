@@ -1,10 +1,10 @@
-import { playerService } from '../playerService';
 import { socketService } from '../socketService';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 
 const UI_SCENE_ID = 'UiScene';
 
 interface PlayerInfo {
+  id: string;
   name: string;
   image: string;
 }
@@ -20,12 +20,12 @@ class UiScene extends Phaser.Scene {
   }
 
   public preload() {
-    this.playerInfo = playerService.getCurrentPlayerInfo();
+    this.playerInfo = this.getCurrentPlayerInfo();
     this.load.image('player', this.playerInfo.image);
-    playerService.getOponentinfo().then(opponent => {
+    this.getOpponentInfo().then(opponent => {
       this.opponentInfo = opponent;
-      this.load.image('oponent', this.opponentInfo.image);
-      this.load.once('filecomplete-image-oponent', () => {
+      this.load.image('opponent', this.opponentInfo.image);
+      this.load.once('filecomplete-image-opponent', () => {
         this.displayOpponentInfo();
       }, this);
       this.load.start();
@@ -42,11 +42,11 @@ class UiScene extends Phaser.Scene {
     gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
 
     socketService.onOpponentConnect(() => {
-      playerService.getOponentinfo().then(opponent => {
+      this.getOpponentInfo().then(opponent => {
         this.opponentInfo = opponent;
-        this.load.image('oponent', this.opponentInfo.image);
+        this.load.image('opponent', this.opponentInfo.image);
 
-        this.load.once('filecomplete-image-oponent', () => {
+        this.load.once('filecomplete-image-opponent', () => {
           this.displayOpponentInfo();
         }, this);
         this.load.start();
@@ -70,7 +70,7 @@ class UiScene extends Phaser.Scene {
   private displayOpponentInfo() {
     const text = this.add.text(this.game.canvas.width, 0, this.opponentInfo!.name);
     text.setOrigin(1, 0);
-    const image = this.add.image(this.game.canvas.width, 30, 'oponent');
+    const image = this.add.image(this.game.canvas.width, 30, 'opponent');
 
     image.setDisplaySize(50, 50);
     image.setOrigin(1, 0);
@@ -80,6 +80,34 @@ class UiScene extends Phaser.Scene {
     // TODO: implement
     // tslint:disable-next-line no-console
     console.log('player change');
+  }
+
+  private getCurrentPlayerInfo() {
+    return {
+      id: this.facebook.getPlayerID(),
+      name: this.facebook.getPlayerName(),
+      image: this.facebook.getPlayerPhotoURL(),
+    };
+  }
+
+  private getOpponentInfo() {
+    return new Promise<PlayerInfo>(resolve => {
+      this.facebook.getPlayers();
+      this.facebook.once('players', (players: FBInstant.ConnectedPlayer[]) => {
+        const opponent = players.find(p => p.getID() !== this.facebook.getPlayerID());
+
+        if (!opponent) {
+          throw new Error('Opponent not found');
+        }
+
+        // TODO figure out when these values can be null
+        resolve({
+          id: opponent.getID(),
+          name: opponent.getName()!,
+          image: opponent.getPhoto()!,
+        });
+      })
+    });
   }
 }
 

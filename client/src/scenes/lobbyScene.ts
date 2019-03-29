@@ -15,7 +15,7 @@ class LobbyScene extends Phaser.Scene {
     const text = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
-      'Choose oponent',
+      'Choose opponent',
     );
     text.setInteractive();
     text.on('pointerdown', () => {
