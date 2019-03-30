@@ -1,7 +1,9 @@
 import { Socket } from 'socket.io';
 import {
-  challenge, Context,
+  challenge,
+  Context,
   create,
+  createGame,
   exists,
   get,
   getGameState,
@@ -23,9 +25,9 @@ function controller(socket: Socket) {
     console.log('Init session');
     const { contextId: ctxId, playerId: pId } = data;
     const session = socket.adapter.rooms[ctxId];
-    // TODO: check if it's player from DB
+
     if (session && session.length >= 2) {
-      console.error('Error - to many people in the room');
+      console.error('Error - to many people in the room.');
       return;
     }
 
@@ -35,15 +37,25 @@ function controller(socket: Socket) {
     socket.join(ctxId);
 
     let context!: Context;
-    if (exists(ctxId)) {
-      context = get(ctxId);
-      if (!context.player2) {
-        update(ctxId, { player2: pId });
-        updateGame(ctxId, { currentTurn: pId }); // TODO: fix
-        context = get(ctxId);
+    if (exists(contextId)) {
+      context = get(contextId);
+      if (playerId !== context.player1 && !context.player2) {
+        update(contextId, { player2: playerId });
+        if (context.game.currentTurn === 'unknown-player') {
+          updateGame(contextId, { currentTurn: playerId });
+        }
+        context = get(contextId);
+      } else if (
+        context.player1 &&
+        context.player2 &&
+        playerId !== context.player1 &&
+        playerId !== context.player2
+      ) {
+        console.error('Error - only 2 players can play in single context.');
+        return;
       }
     } else {
-      context = create(ctxId, pId);
+      context = create(contextId, playerId);
     }
 
     socket.emit('game-loaded', context);
@@ -63,10 +75,10 @@ function controller(socket: Socket) {
 
     if (type === 'progress') {
       try {
-        const opponent = getOpponent(contextId, playerId); // TODO: fix
+        const opponent = getOpponent(contextId, playerId);
         updateGame(contextId, { currentTurn: opponent, trailState });
       } catch {
-        updateGame(contextId, { trailState });
+        updateGame(contextId, { trailState, currentTurn: 'unknown-player' });
       }
 
     } else if (type === 'win') {
@@ -91,7 +103,7 @@ function controller(socket: Socket) {
   });
 
   socket.on('start-new-game', (callback: (ctx: Context) => void) => {
-    const context = create(contextId, playerId);
+    const context = createGame(contextId, playerId);
     callback(context);
     socket.to(contextId).emit('new-game-started', context);
   });

@@ -23,6 +23,9 @@ class UiScene extends SceneExtended {
   public preload() {
     this.playerInfo = this.getCurrentPlayerInfo();
     this.load.image('player', this.playerInfo.image);
+
+    const gameplayScene = this.scene.get(GAMEPLAY_SCENE_ID);
+    gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
   }
 
   public create() {
@@ -33,9 +36,6 @@ class UiScene extends SceneExtended {
 
     this.loadOpponent();
     this.server.onOpponentConnect(this.loadOpponent.bind(this));
-
-    const gameplayScene = this.scene.get(GAMEPLAY_SCENE_ID);
-    gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
   }
 
   private displayPlayerInfo() {

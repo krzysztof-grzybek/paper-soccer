@@ -37,6 +37,11 @@ class GameplayScene extends SceneExtended {
     const currentPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
     if (context.isPlayerTurn) {
       this.prepareForNextMove(currentPoint);
+    } else {
+      // TODO: fix scenes ordering
+      // setTimeout(() => {
+        this.events.emit('player-change');
+      // }, 0)
     }
 
     this.touchIndicators.onChoose(this.onMove.bind(this));

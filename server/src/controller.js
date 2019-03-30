@@ -2,32 +2,40 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var model_1 = require("./model");
 function controller(socket) {
-    console.log('User is connected !');
+    console.log('Session started');
     var playerId;
     var contextId;
     socket.on('init', function (data) {
-        console.log('init action');
+        console.log('Init session');
         var ctxId = data.contextId, pId = data.playerId;
         var session = socket.adapter.rooms[ctxId];
-        // TODO: check if it's player from DB
         if (session && session.length >= 2) {
-            console.error('Error - to many people in the room');
+            console.error('Error - to many people in the room.');
             return;
         }
         playerId = pId;
         contextId = ctxId;
         socket.join(ctxId);
         var context;
-        if (model_1.exists(ctxId)) {
-            context = model_1.get(ctxId);
-            if (!context.player2) {
-                model_1.update(ctxId, { player2: pId });
-                model_1.updateGame(ctxId, { currentTurn: pId }); // TODO: fix
-                context = model_1.get(ctxId);
+        if (model_1.exists(contextId)) {
+            context = model_1.get(contextId);
+            if (playerId !== context.player1 && !context.player2) {
+                model_1.update(contextId, { player2: playerId });
+                if (context.game.currentTurn === 'unknown-player') {
+                    model_1.updateGame(contextId, { currentTurn: playerId });
+                }
+                context = model_1.get(contextId);
+            }
+            else if (context.player1 &&
+                context.player2 &&
+                playerId !== context.player1 &&
+                playerId !== context.player2) {
+                console.error('Error - only 2 players can play in single context.');
+                return;
             }
         }
         else {
-            context = model_1.create(ctxId, pId);
+            context = model_1.create(contextId, playerId);
         }
         socket.emit('game-loaded', context);
         socket.to(contextId).emit('opponent-connected', playerId);
@@ -42,11 +50,11 @@ function controller(socket) {
         }
         if (type === 'progress') {
             try {
-                var opponent = model_1.getOpponent(contextId, playerId); // TODO: fix
+                var opponent = model_1.getOpponent(contextId, playerId);
                 model_1.updateGame(contextId, { currentTurn: opponent, trailState: trailState });
             }
             catch (_b) {
-                model_1.updateGame(contextId, { trailState: trailState });
+                model_1.updateGame(contextId, { trailState: trailState, currentTurn: 'unknown-player' });
             }
         }
         else if (type === 'win') {
@@ -67,7 +75,7 @@ function controller(socket) {
         socket.to(contextId).emit('challenged', { challengedAgainBy: playerId });
     });
     socket.on('start-new-game', function (callback) {
-        var context = model_1.create(contextId, playerId);
+        var context = model_1.createGame(contextId, playerId);
         callback(context);
         socket.to(contextId).emit('new-game-started', context);
     });

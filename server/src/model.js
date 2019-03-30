@@ -17,14 +17,17 @@ function createContext(contextId, playerId) {
         contextId: contextId,
         player1: playerId,
         player2: null,
-        game: {
-            initiator: playerId,
-            currentTurn: playerId,
-            state: 'progress',
-            winner: null,
-            challengedAgainBy: null,
-            trailState: [],
-        },
+        game: createGameInstance(playerId),
+    };
+}
+function createGameInstance(playerId) {
+    return {
+        initiator: playerId,
+        currentTurn: playerId,
+        state: 'progress',
+        winner: null,
+        challengedAgainBy: null,
+        trailState: [],
     };
 }
 function exists(contextId) {
@@ -46,6 +49,12 @@ function create(contextId, playerId) {
     return context;
 }
 exports.create = create;
+function createGame(contextId, playerId) {
+    var newGame = createGameInstance(playerId);
+    updateGame(contextId, newGame);
+    return get(contextId);
+}
+exports.createGame = createGame;
 function update(contextId, updateData) {
     var db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
     db[contextId] = __assign({}, db[contextId], updateData);

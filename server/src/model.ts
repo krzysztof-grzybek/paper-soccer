@@ -4,7 +4,7 @@ type player = string;
 
 interface Game {
   initiator: player;
-  currentTurn: player;
+  currentTurn: player | 'unknown-player';
   state: 'progress' | 'end';
   winner: player | null;
   challengedAgainBy: player | null;
@@ -23,14 +23,18 @@ function createContext(contextId: string, playerId: string): Context {
     contextId,
     player1: playerId,
     player2: null,
-    game: {
-      initiator: playerId,
-      currentTurn: playerId,
-      state: 'progress',
-      winner: null,
-      challengedAgainBy: null,
-      trailState: [],
-    },
+    game: createNewGame(playerId),
+  };
+}
+
+function createNewGame(initiatorPlayer: string): Game {
+  return {
+    initiator: initiatorPlayer,
+    currentTurn: initiatorPlayer,
+    state: 'progress',
+    winner: null,
+    challengedAgainBy: null,
+    trailState: [],
   };
 }
 
@@ -45,12 +49,17 @@ function get(contextId: string): Context {
   return db[contextId];
 }
 
-function create(contextId: string, playerId: player): Context {
+function create(contextId: string, initiatorPlayer: player): Context {
   const db = JSON.parse(fs.readFileSync(__dirname + '/database.json', 'utf8'));
-  const context = createContext(contextId, playerId);
+  const context = createContext(contextId, initiatorPlayer);
   db[contextId] = context;
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
   return context;
+}
+function createGame(contextId: string, playerId: player): Context {
+  const newGame = createNewGame(playerId);
+  updateGame(contextId, newGame);
+  return get(contextId);
 }
 
 function update(contextId: string, updateData: Partial<Context>): Context {
@@ -100,4 +109,4 @@ function challenge(contextId: string, playerId: player) {
   updateGame(contextId, { challengedAgainBy: playerId });
 }
 
-export { Context, Game, challenge, create, exists, get, getOpponent, getGameState, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };
+export { Context, Game, challenge, create, createGame, exists, get, getOpponent, getGameState, isTurnOwnedBy, update, updateGame, setLostMove, setWinMove };
