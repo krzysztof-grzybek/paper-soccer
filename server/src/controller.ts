@@ -14,13 +14,13 @@ import {
 } from './model';
 
 function controller(socket: Socket) {
-  console.log('User is connected !');
+  console.log('Session started');
 
   let playerId!: string;
   let contextId!: string;
 
   socket.on('init', (data: { contextId: string, playerId: string }) => {
-    console.log('init action');
+    console.log('Init session');
     const { contextId: ctxId, playerId: pId } = data;
     const session = socket.adapter.rooms[ctxId];
     // TODO: check if it's player from DB

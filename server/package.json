@@ -7,7 +7,8 @@
     "node": "10.9.0"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev nodemon -w ./ --ignore src/database.json --inspect --require ts-node/register  ./src/index.ts",
+    "dev": "cross-env NODE_ENV=dev node --inspect --require ts-node/register  ./src/index.ts",
+    "watch": "nodemon",
     "start": "cross-env NODE_ENV=prod node ./src/index.js",
     "build": "cross-env NODE_ENV=prod tsc -p ./tsconfig.json ",
     "deploy": "git push heroku master"
@@ -47,5 +48,15 @@
     "https": "^1.0.0",
     "request": "^2.88.0",
     "socket.io": "^2.2.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "src/database.json"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "npm run dev",
+    "ext": "ts"
   }
 }
