@@ -9,6 +9,7 @@ function controller(socket) {
         console.log('init action');
         var ctxId = data.contextId, pId = data.playerId;
         var session = socket.adapter.rooms[ctxId];
+        // TODO: check if it's player from DB
         if (session && session.length >= 2) {
             console.error('Error - to many people in the room');
             return;

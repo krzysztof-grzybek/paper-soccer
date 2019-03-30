@@ -8,6 +8,7 @@ interface PlayerInfo {
   name: string;
   image: string;
 }
+
 class UiScene extends Phaser.Scene {
   private playerInfo: PlayerInfo | null = null;
   private opponentInfo: PlayerInfo | null = null;
@@ -22,49 +23,40 @@ class UiScene extends Phaser.Scene {
   public preload() {
     this.playerInfo = this.getCurrentPlayerInfo();
     this.load.image('player', this.playerInfo.image);
-    this.getOpponentInfo().then(opponent => {
-      this.opponentInfo = opponent;
-      this.load.image('opponent', this.opponentInfo.image);
-      this.load.once('filecomplete-image-opponent', () => {
-        this.displayOpponentInfo();
-      }, this);
-      this.load.start();
-    });
   }
 
   public create() {
     const x = this.game.canvas.width / 2;
     const text = this.add.text(x, 0, 'Paper soccer');
     text.setOrigin(0.5, 0);
-    this.displayPlayersInfo();
+    this.displayPlayerInfo();
+
+    this.loadOpponent();
+    socketService.onOpponentConnect(this.loadOpponent.bind(this));
 
     const gameplayScene = this.scene.get(GAMEPLAY_SCENE_ID);
     gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
-
-    socketService.onOpponentConnect(() => {
-      this.getOpponentInfo().then(opponent => {
-        this.opponentInfo = opponent;
-        this.load.image('opponent', this.opponentInfo.image);
-
-        this.load.once('filecomplete-image-opponent', () => {
-          this.displayOpponentInfo();
-        }, this);
-        this.load.start();
-      });
-    });
   }
 
-  private displayPlayersInfo() {
+  private displayPlayerInfo() {
     if (this.playerInfo) {
       this.add.text(0, 0, this.playerInfo.name);
       const image = this.add.image(0, 30, 'player');
       image.setDisplaySize(50, 50);
       image.setOrigin(0, 0);
     }
+  }
 
-    if (this.opponentInfo) {
-      this.displayOpponentInfo();
-    }
+  private loadOpponent() {
+    this.getOpponentInfo().then(opponent => {
+      this.opponentInfo = opponent;
+      this.load.image('opponent', this.opponentInfo.image);
+
+      this.load.once('filecomplete-image-opponent', () => {
+        this.displayOpponentInfo();
+      }, this);
+      this.load.start();
+    });
   }
 
   private displayOpponentInfo() {
@@ -89,7 +81,6 @@ class UiScene extends Phaser.Scene {
       image: this.facebook.getPlayerPhotoURL(),
     };
   }
-
   private getOpponentInfo() {
     return new Promise<PlayerInfo>(resolve => {
       this.facebook.getPlayers();

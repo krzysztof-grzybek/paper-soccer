@@ -24,6 +24,8 @@ interface Context {
 interface PlayerContext extends Context {
   isPlayerTurn: boolean;
   isFirstPlayer: boolean;
+  won: boolean;
+  opponent: player | null;
 }
 
 type moveType = 'progress' | 'win' | 'loss';
@@ -46,6 +48,8 @@ class SocketService {
           ...context,
           isPlayerTurn: context.game.currentTurn === playerId,
           isFirstPlayer: context.player1 === playerId,
+          won: context.game.winner === playerId,
+          opponent: context.player1 === playerId ? context.player2 : context.player1,
         });
       });
     });
@@ -77,6 +81,8 @@ class SocketService {
         ...context,
         isPlayerTurn: context.game.currentTurn === this.playerId,
         isFirstPlayer: context.player1 === this.playerId,
+        won: context.game.winner === this.playerId,
+        opponent: context.player1 === this.playerId ? context.player2 : context.player1,
       });
     });
   }
@@ -93,10 +99,12 @@ class SocketService {
         ...context,
         isPlayerTurn: context.game.currentTurn === this.playerId,
         isFirstPlayer: context.player1 === this.playerId,
+        won: context.game.winner === this.playerId,
+        opponent: context.player1 === this.playerId ? context.player2 : context.player1,
       });
     });
   }
 }
 
 const socketService = new SocketService();
-export { Context, Game, PlayerContext, player, socketService };
+export { Context, Game, moveType, PlayerContext, player, socketService };

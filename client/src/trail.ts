@@ -35,8 +35,8 @@ class Trail {
     return !this.adjacentList[lastPointIndex].includes(point.index);
   }
 
-  public wasPointVisited(pointIndex: number) {
-    return this.adjacentList[pointIndex] && this.adjacentList[pointIndex].length;
+  public wasPointVisitedAtLeastTwice(pointIndex: number) {
+    return this.adjacentList[pointIndex] && this.adjacentList[pointIndex].length >= 2;
   }
 
   public getState() {

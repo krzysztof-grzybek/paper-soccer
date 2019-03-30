@@ -16,7 +16,7 @@ class PreloaderScene extends Phaser.Scene {
     this.facebook.once('startgame', this.startGame, this);
     this.facebook.showLoadProgress(this);
 
-    this.load.image('ball', './assets/ball.png');
+    this.load.image('msngr-icon', './assets/ball.png');
   }
 
   private startGame() {
@@ -26,10 +26,8 @@ class PreloaderScene extends Phaser.Scene {
         if (context.game.state === 'progress') {
           this.scene.start(GAMEPLAY_SCENE_ID, context);
         } else if (context.game.state === 'end') {
-          const won = context.game.winner === this.facebook.getPlayerID();
-          const opponentId = context.player1 === this.facebook.getPlayerID() ? context.player2! : context.player1!;
-          const state = this.getGameEndState(context.game.challengedAgainBy, this.facebook.getPlayerID(), opponentId);
-          this.scene.start(GAME_END_SCENE_ID, { won, state });
+          const state = this.getGameEndState(context.game.challengedAgainBy, this.facebook.getPlayerID(), context.opponent!);
+          this.scene.start(GAME_END_SCENE_ID, { won: context.won, state });
         }
 
         this.scene.stop(PRELOADER_SCENE_ID);
