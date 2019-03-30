@@ -1,11 +1,11 @@
-import { socketService } from '../socketService';
+import { SceneExtended } from '../model';
+import { GAME_END_SCENE_ID, gameEndSceneState } from './gameEndScene';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 import { UI_SCENE_ID } from './uiScene';
-import {GAME_END_SCENE_ID, gameEndSceneState} from "./gameEndScene";
 
 const LOBBY_SCENE_ID = 'LobbyScene';
 
-class LobbyScene extends Phaser.Scene {
+class LobbyScene extends SceneExtended {
   constructor() {
     super({
       key: LOBBY_SCENE_ID,
@@ -26,12 +26,16 @@ class LobbyScene extends Phaser.Scene {
 
     this.facebook.on('choose', (contextID: string) => {
       // TODO: move repeated code (preloaderScene) to some common place
-      socketService.init(contextID, this.facebook.playerID).then(context => {
+      this.server.initSession(contextID, this.facebook.playerID).then(context => {
         this.scene.start(UI_SCENE_ID);
         if (context.game.state === 'progress') {
           this.scene.start(GAMEPLAY_SCENE_ID, context);
         } else if (context.game.state === 'end') {
-          const state = this.getGameEndState(context.game.challengedAgainBy, this.facebook.getPlayerID(), context.opponent!);
+          const state = this.getGameEndState(
+            context.game.challengedAgainBy,
+            this.facebook.getPlayerID(),
+            context.opponent!,
+          );
           this.scene.start(GAME_END_SCENE_ID, { won: context.won, state });
         }
 

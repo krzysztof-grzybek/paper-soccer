@@ -1,4 +1,4 @@
-import { socketService } from '../socketService';
+import { SceneExtended } from '../model';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 
 const UI_SCENE_ID = 'UiScene';
@@ -9,7 +9,7 @@ interface PlayerInfo {
   image: string;
 }
 
-class UiScene extends Phaser.Scene {
+class UiScene extends SceneExtended {
   private playerInfo: PlayerInfo | null = null;
   private opponentInfo: PlayerInfo | null = null;
 
@@ -32,7 +32,7 @@ class UiScene extends Phaser.Scene {
     this.displayPlayerInfo();
 
     this.loadOpponent();
-    socketService.onOpponentConnect(this.loadOpponent.bind(this));
+    this.server.onOpponentConnect(this.loadOpponent.bind(this));
 
     const gameplayScene = this.scene.get(GAMEPLAY_SCENE_ID);
     gameplayScene.events.on('player-change', this.onPlayerChange.bind(this));
@@ -97,7 +97,7 @@ class UiScene extends Phaser.Scene {
           name: opponent.getName()!,
           image: opponent.getPhoto()!,
         });
-      })
+      });
     });
   }
 }

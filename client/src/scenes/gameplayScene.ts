@@ -1,12 +1,12 @@
 import { Board } from '../board/board';
-import {moveType, PlayerContext, socketService} from '../socketService';
+import { moveType, PlayerContext, SceneExtended } from '../model';
 import { TouchIndicators } from '../touchIndicators';
 import { Trail } from '../trail';
 import { GAME_END_SCENE_ID } from './gameEndScene';
 
 const GAMEPLAY_SCENE_ID = 'GameplayScene';
 
-class GameplayScene extends Phaser.Scene {
+class GameplayScene extends SceneExtended {
   private board!: Board;
   private touchIndicators!: TouchIndicators;
   private trail!: Trail;
@@ -40,7 +40,7 @@ class GameplayScene extends Phaser.Scene {
     }
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
-    socketService.onOpponentMove(this.onOpponentMove.bind(this));
+    this.server.onOpponentMove(this.onOpponentMove.bind(this));
   }
 
   private getSceneRenderConfig() {
@@ -64,21 +64,21 @@ class GameplayScene extends Phaser.Scene {
 
     if (isWin) {
       this.scene.start(GAME_END_SCENE_ID, { won: true, state: 'initial' });
-      socketService.sendMove({ type: 'win', trailState: this.trail.getState() });
+      this.server.sendMove({ type: 'win', trailState: this.trail.getState() });
       this.notifyOpponentOnMsngr();
       return;
     }
 
     if (isLoss) {
       this.scene.start(GAME_END_SCENE_ID, { won: false, state: 'initial' });
-      socketService.sendMove({ type: 'loss', trailState: this.trail.getState() });
+      this.server.sendMove({ type: 'loss', trailState: this.trail.getState() });
       this.notifyOpponentOnMsngr();
       return;
     }
 
     if (isLastMoveInTurn) {
       this.events.emit('player-change');
-      socketService.sendMove({ type: 'progress', trailState: this.trail.getState() });
+      this.server.sendMove({ type: 'progress', trailState: this.trail.getState() });
       this.notifyOpponentOnMsngr();
       return;
     }

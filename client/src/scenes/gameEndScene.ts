@@ -1,4 +1,4 @@
-import { socketService } from '../socketService';
+import { SceneExtended } from '../model';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 
 const GAME_END_SCENE_ID = 'GameEndScene';
@@ -9,7 +9,7 @@ interface InitialData {
   state: state;
   won: boolean;
 }
-class GameEndScene extends Phaser.Scene {
+class GameEndScene extends SceneExtended {
   private infoText: Phaser.GameObjects.Text | null = null;
   private button!: Phaser.GameObjects.Text;
   private state: state = 'initial';
@@ -44,21 +44,21 @@ class GameEndScene extends Phaser.Scene {
         break;
     }
 
-    socketService.onChallenge(() => {
+    this.server.onChallenge(() => {
       this.setChallengedByOpponentState();
     });
 
-    socketService.onNewGameStarted((game) => {
+    this.server.onNewGameStarted((game) => {
       this.scene.start(GAMEPLAY_SCENE_ID, game);
       this.scene.stop(GAME_END_SCENE_ID);
     });
 
     this.button.on('pointerdown', () => {
       if (this.state === 'initial') {
-        socketService.challengeOpponent();
+        this.server.challengeOpponent();
         this.setWaitingForOpponentAcceptState();
       } else if (this.state === 'challenged-by-opponent') {
-        socketService.startNewGame(game => {
+        this.server.startNewGame(game => {
           this.scene.start(GAMEPLAY_SCENE_ID, game);
           this.scene.stop(GAME_END_SCENE_ID);
         });

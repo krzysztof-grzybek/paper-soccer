@@ -1,12 +1,12 @@
-import { socketService } from '../socketService';
+import { SceneExtended } from '../model';
+import { GAME_END_SCENE_ID, gameEndSceneState } from './gameEndScene';
 import { GAMEPLAY_SCENE_ID } from './gameplayScene';
 import { LOBBY_SCENE_ID } from './lobbyScene';
 import { UI_SCENE_ID } from './uiScene';
-import { GAME_END_SCENE_ID, gameEndSceneState } from './gameEndScene';
 
 const PRELOADER_SCENE_ID = 'PreloaderScene';
 
-class PreloaderScene extends Phaser.Scene {
+class PreloaderScene extends SceneExtended {
 
   constructor() {
     super(PRELOADER_SCENE_ID);
@@ -21,12 +21,16 @@ class PreloaderScene extends Phaser.Scene {
 
   private startGame() {
     if (this.facebook.contextType === 'THREAD') {
-      socketService.init(this.facebook.contextID, this.facebook.playerID).then(context => {
+      this.server.initSession(this.facebook.contextID, this.facebook.playerID).then(context => {
         this.scene.start(UI_SCENE_ID);
         if (context.game.state === 'progress') {
           this.scene.start(GAMEPLAY_SCENE_ID, context);
         } else if (context.game.state === 'end') {
-          const state = this.getGameEndState(context.game.challengedAgainBy, this.facebook.getPlayerID(), context.opponent!);
+          const state = this.getGameEndState(
+            context.game.challengedAgainBy,
+            this.facebook.getPlayerID(),
+            context.opponent!,
+          );
           this.scene.start(GAME_END_SCENE_ID, { won: context.won, state });
         }
 
