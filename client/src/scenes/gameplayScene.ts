@@ -38,10 +38,7 @@ class GameplayScene extends SceneExtended {
     if (context.isPlayerTurn) {
       this.prepareForNextMove(currentPoint);
     } else {
-      // TODO: fix scenes ordering
-      // setTimeout(() => {
-        this.events.emit('player-change');
-      // }, 0)
+      this.events.emit('player-change');
     }
 
     this.touchIndicators.onChoose(this.onMove.bind(this));
@@ -70,21 +67,21 @@ class GameplayScene extends SceneExtended {
     if (isWin) {
       this.scene.start(GAME_END_SCENE_ID, { won: true, state: 'initial' });
       this.server.sendMove({ type: 'win', trailState: this.trail.getState() });
-      this.notifyOpponentOnMsngr();
+      this.notifyOpponentOnMsngrIfNotConnected();
       return;
     }
 
     if (isLoss) {
       this.scene.start(GAME_END_SCENE_ID, { won: false, state: 'initial' });
       this.server.sendMove({ type: 'loss', trailState: this.trail.getState() });
-      this.notifyOpponentOnMsngr();
+      this.notifyOpponentOnMsngrIfNotConnected();
       return;
     }
 
     if (isLastMoveInTurn) {
       this.events.emit('player-change');
       this.server.sendMove({ type: 'progress', trailState: this.trail.getState() });
-      this.notifyOpponentOnMsngr();
+      this.notifyOpponentOnMsngrIfNotConnected();
       return;
     }
 
@@ -105,17 +102,20 @@ class GameplayScene extends SceneExtended {
     return this.board.isOnBand(pointIndex) || this.trail.wasPointVisitedAtLeastTwice(pointIndex);
   }
 
-  private notifyOpponentOnMsngr() {
-    this.facebook.update('Play', {
-      default: 'Opponent made a move!',
-      localizations: {
-        es_PL: 'Przeciwnik zrobił ruch!',
-      },
-    }, 'msngr-icon', 0, 'next_turn', {});
+  private notifyOpponentOnMsngrIfNotConnected() {
+    this.server.isOpponentConnected().then(isConnected => {
+      if (isConnected) {
+        return;
+      }
 
-    /* tslint:disable:no-console */
-    this.facebook.once('update', () => console.log('update success'));
-    this.facebook.once('updatefail', (e: any) => console.log(e));
+      // TODO: provide proper text
+      this.facebook.update('Play', {
+        default: 'Opponent made a move!',
+        localizations: {
+          es_PL: 'Przeciwnik zrobił ruch!',
+        },
+      }, 'msngr-icon', 0, 'next_turn', {});
+    });
   }
 
   private onOpponentMove({ type, trailState }: { type: moveType, trailState: number[] }) {

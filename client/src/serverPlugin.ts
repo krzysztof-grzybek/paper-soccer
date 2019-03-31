@@ -60,6 +60,12 @@ class Server extends Phaser.Plugins.BasePlugin {
     });
   }
 
+  public isOpponentConnected() {
+    return new Promise(resolve => {
+      this.socket.emit('is-opponent-connected', resolve);
+    });
+  }
+
   private decorateContext(context: Context): PlayerContext {
     const isFirstPlayer = context.player1 === this.game.facebook.playerID;
     return {

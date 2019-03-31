@@ -15,7 +15,7 @@ function controller(socket) {
         }
         playerId = pId;
         contextId = ctxId;
-        socket.join(ctxId);
+        socket.join(contextId);
         var context;
         if (model_1.exists(contextId)) {
             context = model_1.get(contextId);
@@ -78,6 +78,11 @@ function controller(socket) {
         var context = model_1.createGame(contextId, playerId);
         callback(context);
         socket.to(contextId).emit('new-game-started', context);
+    });
+    socket.on('is-opponent-connected', function (callback) {
+        var session = socket.adapter.rooms[contextId];
+        var isOpponentConnected = session && session.length === 2;
+        callback(isOpponentConnected);
     });
 }
 exports.controller = controller;

@@ -34,7 +34,7 @@ function controller(socket: Socket) {
     playerId = pId;
     contextId = ctxId;
 
-    socket.join(ctxId);
+    socket.join(contextId);
 
     let context!: Context;
     if (exists(contextId)) {
@@ -106,6 +106,12 @@ function controller(socket: Socket) {
     const context = createGame(contextId, playerId);
     callback(context);
     socket.to(contextId).emit('new-game-started', context);
+  });
+
+  socket.on('is-opponent-connected', (callback: (isConnected: boolean) => void) => {
+    const session = socket.adapter.rooms[contextId];
+    const isOpponentConnected = session && session.length === 2;
+    callback(isOpponentConnected);
   });
 
 }

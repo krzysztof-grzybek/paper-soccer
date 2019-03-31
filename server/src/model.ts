@@ -56,6 +56,7 @@ function create(contextId: string, initiatorPlayer: player): Context {
   fs.writeFileSync(__dirname + '/database.json', JSON.stringify(db));
   return context;
 }
+
 function createGame(contextId: string, playerId: player): Context {
   const newGame = createNewGame(playerId);
   updateGame(contextId, newGame);
