@@ -2,7 +2,7 @@ import { BoardView } from './boardView';
 import { createBoardGraph } from './createBoardGraph';
 
 const ROWS = 9;
-const COLUMNS = 11;
+const COLUMNS = 13;
 
 class Board {
   private graph = createBoardGraph(ROWS, COLUMNS);
