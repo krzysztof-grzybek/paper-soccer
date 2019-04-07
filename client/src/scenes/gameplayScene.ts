@@ -32,7 +32,7 @@ class GameplayScene extends SceneExtended {
     this.aimGate = context.isFirstPlayer ? 2 : 1;
     this.ownGate = context.isFirstPlayer ? 1 : 2;
 
-    this.trail.addMissing(context.game.trailState);
+    this.trail.addMissing(context.trailState);
     const lastTrailPoint = this.trail.getLastPoint();
     const currentPoint = lastTrailPoint !== null ? lastTrailPoint : this.board.getStartingPoint();
     if (context.isPlayerTurn) {
@@ -123,9 +123,9 @@ class GameplayScene extends SceneExtended {
     if (type === 'progress') {
       this.prepareForNextMove(trailState[trailState.length - 1]);
     } else if (type === 'win') {
-      this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: true });
-    } else if (type === 'loss') {
       this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: false });
+    } else if (type === 'loss') {
+      this.scene.start(GAME_END_SCENE_ID, { state: 'initial', won: true });
     }
   }
 }

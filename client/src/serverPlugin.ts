@@ -70,9 +70,9 @@ class Server extends Phaser.Plugins.BasePlugin {
     const isFirstPlayer = context.player1 === this.game.facebook.playerID;
     return {
       ...context,
-      isPlayerTurn: context.game.currentTurn === this.game.facebook.playerID,
+      isPlayerTurn: context.currentTurn === this.game.facebook.playerID,
       isFirstPlayer,
-      won: context.game.winner === this.game.facebook.playerID,
+      won: context.winner === this.game.facebook.playerID,
       opponent: isFirstPlayer ? context.player2 : context.player1,
     };
   }

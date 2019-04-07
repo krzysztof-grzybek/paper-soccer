@@ -12,7 +12,7 @@ import {
   setLostMove,
   setWinMove,
   update,
-  updateGame
+  updateGame,
 } from './model';
 
 function controller(socket: Socket) {
@@ -21,7 +21,7 @@ function controller(socket: Socket) {
   let playerId!: string;
   let contextId!: string;
 
-  socket.on('init', (data: { contextId: string, playerId: string }) => {
+  socket.on('init', async (data: { contextId: string, playerId: string }) => {
     console.log('Init session');
     const { contextId: ctxId, playerId: pId } = data;
     const session = socket.adapter.rooms[ctxId];
@@ -37,14 +37,15 @@ function controller(socket: Socket) {
     socket.join(contextId);
 
     let context!: Context;
-    if (exists(contextId)) {
-      context = get(contextId);
+    if (await exists(contextId)) {
+      context = await get(contextId);
+      console.log(context);
       if (playerId !== context.player1 && !context.player2) {
-        update(contextId, { player2: playerId });
-        if (context.game.currentTurn === 'unknown-player') {
-          updateGame(contextId, { currentTurn: playerId });
+        await update(contextId, { player2: playerId });
+        if (context.currentTurn === 'unknown-player') {
+          await updateGame(contextId, { currentTurn: playerId });
         }
-        context = get(contextId);
+        context = await get(contextId);
       } else if (
         context.player1 &&
         context.player2 &&
@@ -55,7 +56,7 @@ function controller(socket: Socket) {
         return;
       }
     } else {
-      context = create(contextId, playerId);
+      context = await create(contextId, playerId);
     }
 
     socket.emit('game-loaded', context);
@@ -66,44 +67,44 @@ function controller(socket: Socket) {
       socket.leave(contextId);
   });
 
-  socket.on('move', (
+  socket.on('move', async (
     { type, trailState }: { type: 'progress' | 'win' | 'loss', trailState: number[] }
   ) => {
-    if (!isTurnOwnedBy(contextId, playerId)) {
+    if (!await isTurnOwnedBy(contextId, playerId)) {
       return;
     }
 
     if (type === 'progress') {
       try {
-        const opponent = getOpponent(contextId, playerId);
-        updateGame(contextId, { currentTurn: opponent, trailState });
+        const opponent = await getOpponent(contextId, playerId);
+        await updateGame(contextId, { currentTurn: opponent, trailState });
       } catch {
-        updateGame(contextId, { trailState, currentTurn: 'unknown-player' });
+        await updateGame(contextId, { trailState, currentTurn: 'unknown-player' });
       }
 
     } else if (type === 'win') {
-      setWinMove(contextId, playerId, trailState);
+      await setWinMove(contextId, playerId, trailState);
     } else if (type === 'loss') {
-      setLostMove(contextId, playerId, trailState);
+      await setLostMove(contextId, playerId, trailState);
     }
 
     socket.to(contextId).emit('opponent-moved', { type, trailState });
   });
 
-  socket.on('challenge', () => {
-    const gameState = getGameState(contextId);
+  socket.on('challenge', async () => {
+    const gameState = await getGameState(contextId);
 
     if (gameState !== 'end') {
       console.error('Cannot challenge during the game');
       return;
     }
 
-    challenge(contextId, playerId);
+    await challenge(contextId, playerId);
     socket.to(contextId).emit('challenged', { challengedAgainBy: playerId });
   });
 
-  socket.on('start-new-game', (callback: (ctx: Context) => void) => {
-    const context = createGame(contextId, playerId);
+  socket.on('start-new-game', async (callback: (ctx: Context) => void) => {
+    const context = await createGame(contextId, playerId);
     callback(context);
     socket.to(contextId).emit('new-game-started', context);
   });

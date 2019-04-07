@@ -13,11 +13,10 @@ interface Game {
   trailState: number[];
 }
 
-interface Context {
+interface Context extends Game {
   contextId: string;
   player1: player;
   player2: player | null;
-  game: Game;
 }
 
 interface PlayerContext extends Context {

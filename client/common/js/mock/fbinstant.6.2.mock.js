@@ -23,7 +23,7 @@ var FBInstant = {
       return FBInstant.__utils.returnUserData('./common/img/mock/profile.png');
     },
     getID: function () {
-      const id = Number(localStorage.getItem('playerId')) || 54321;
+      const id = localStorage.getItem('playerId') || '54321';
       return FBInstant.__utils.returnUserData(id);
     },
     getDataAsync: function (keys) {
@@ -69,17 +69,17 @@ var FBInstant = {
         if (initialized) {
           players = [
             {
-              getID: function () { return 42; },
+              getID: function () { return '42'; },
               getName: function () { return 'Friend 1'; },
               getPhoto: function () { return './img/mock/friend1.png'; }
             },
             {
-              getID: function () { return 43; },
+              getID: function () { return '43'; },
               getName: function () { return 'Friend 2'; },
               getPhoto: function () { return './img/mock/friend2.png'; }
             },
             {
-              getID: function () { return 44; },
+              getID: function () { return '44'; },
               getName: function () { return 'Friend 3'; },
               getPhoto: function () { return './img/mock/friend3.png'; }
             }
@@ -108,7 +108,7 @@ var FBInstant = {
   },
   context: {
     getID: function () {
-      return 1234321;
+      return '1234321';
     },
     chooseAsync: function () {
       return new Promise(function (resolve, reject) {
@@ -159,17 +159,17 @@ var FBInstant = {
         if (initialized) {
           players = [
             {
-              getID: function () { return 42; },
+              getID: function () { return '42'; },
               getName: function () { return 'Friend 1'; },
               getPhoto: function () { return './common/img/mock/friend1.png'; }
             },
             {
-              getID: function () { return 43; },
+              getID: function () { return '43'; },
               getName: function () { return 'Friend 2'; },
               getPhoto: function () { return './common/img/mock/friend2.png'; }
             },
             {
-              getID: function () { return 44; },
+              getID: function () { return '44'; },
               getName: function () { return 'Friend 3'; },
               getPhoto: function () { return './common/img/mock/friend3.png'; }
             }

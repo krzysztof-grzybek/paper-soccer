@@ -83,8 +83,7 @@ class UiScene extends SceneExtended {
   }
   private getOpponentInfo() {
     return new Promise<PlayerInfo>(resolve => {
-      this.facebook.getPlayers();
-      this.facebook.once('players', (players: FBInstant.ConnectedPlayer[]) => {
+      FBInstant.context.getPlayersAsync().then(players => {
         const opponent = players.find(p => p.getID() !== this.facebook.getPlayerID());
 
         if (!opponent) {

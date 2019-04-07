@@ -23,11 +23,11 @@ class PreloaderScene extends SceneExtended {
     if (this.facebook.contextType === 'THREAD') {
       this.server.initSession(this.facebook.contextID, this.facebook.playerID).then(context => {
         this.scene.start(UI_SCENE_ID);
-        if (context.game.state === 'progress') {
+        if (context.state === 'progress') {
           this.scene.start(GAMEPLAY_SCENE_ID, context);
-        } else if (context.game.state === 'end') {
+        } else if (context.state === 'end') {
           const state = this.getGameEndState(
-            context.game.challengedAgainBy,
+            context.challengedAgainBy,
             this.facebook.getPlayerID(),
             context.opponent!,
           );
