@@ -1,7 +1,7 @@
-import fs = require('fs');
 import redis = require('redis');
+import config = require('./config');
 
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({ url: config.config.dbUrl });
 
 type player = string;
 
